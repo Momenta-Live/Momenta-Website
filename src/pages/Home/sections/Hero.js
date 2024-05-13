@@ -68,26 +68,27 @@ function Hero() {
           >
             No Creeps, Just Peeps
           </MKTypography>
-          <TypeAnimation
-            sequence={[
-              // Same substring at the start will only be typed out once, initially
-              "Slide Into DMs, Not Dilemmas.",
-              1000, // wait 1s before replacing "Mice" with "Hamsters"
-              "Your go-to for private live social chatting.",
-              1000,
-              "Good vibes only.",
-              1000,
-            ]}
-            wrapper="span"
-            speed={30}
-            style={{
-              fontSize: "1.2em",
-              display: "inline-block",
-              color: "white",
-              marginBottom: "5vh",
-            }}
-            repeat={Infinity}
-          />
+          <MKBox minHeight={"120px"}>
+            <TypeAnimation
+              sequence={[
+                // Same substring at the start will only be typed out once, initially
+                "Slide Into DMs, Not Dilemmas.",
+                1000, // wait 1s before replacing "Mice" with "Hamsters"
+                "Your go-to for private social chatting.",
+                1000,
+                "Good vibes only.",
+                1000,
+              ]}
+              wrapper="span"
+              speed={30}
+              style={{
+                fontSize: "1em",
+                display: "inline-block",
+                color: "white",
+              }}
+              repeat={Infinity}
+            />
+          </MKBox>
           <MKButton
             variant="gradient"
             color="dark"

@@ -30,7 +30,7 @@ function InfoCard({ image, title, description }) {
     <Card
       sx={{
         display: "flex",
-        minHeight: { sm: 320, md: 320 },
+        minHeight: { xs: 320, sm: 300, md: 300 },
       }}
     >
       <MKBox
@@ -41,7 +41,7 @@ function InfoCard({ image, title, description }) {
       >
         <img src={image} width="30%" />
       </MKBox>
-      <MKBox p={2} textAlign="center" height="50%">
+      <MKBox p={1} textAlign="center" height="50%">
         <MKTypography display="inline" variant="h5" textTransform="capitalize" fontWeight="regular">
           {title}
         </MKTypography>

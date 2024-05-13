@@ -43,7 +43,7 @@ function Home() {
               rgba(gradients.dark.main, 0),
               rgba(gradients.dark.state, 0)
             )}, url(${bgImage})`,
-          backgroundSize: "cover",
+          backgroundSize: { xs: "cover", md: "cover" },
           backgroundPosition: { xs: "center", sm: "center", md: "top" },
           display: "grid",
           placeItems: "center",

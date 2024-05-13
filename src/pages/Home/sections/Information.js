@@ -22,7 +22,7 @@ import Grid from "@mui/material/Grid";
 import MKBox from "components/MKBox";
 
 // Material Kit 2 React examples
-import InfoCard from "examples/Cards/InfoCards/InfoCard";
+import InfoCard from "components/Cards/InfoCards/InfoCard";
 
 // Images
 import IconCreepBlock from "assets/images/IconCreepBlock.png";
@@ -44,7 +44,7 @@ function Information() {
           height: "100%",
         }}
       >
-        <Grid container justifyContent="flex-start" spacing={4}>
+        <Grid container justifyContent="flex-start" spacing={2}>
           <Grid item xs={6} sm={6} md={3}>
             <MKBox py={5}>
               <InfoCard
