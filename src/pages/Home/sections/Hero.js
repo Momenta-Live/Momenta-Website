@@ -79,7 +79,7 @@ function Hero() {
               1000,
             ]}
             wrapper="span"
-            speed={10}
+            speed={30}
             style={{
               fontSize: "1.2em",
               display: "inline-block",
@@ -94,13 +94,14 @@ function Hero() {
             size="large"
             sx={{
               my: "10px",
-              width: "350px",
+              width: "90%",
+              maxWidth: "400px",
               height: "100px",
               textAlign: "center",
               fontSize: "1.2em",
               fontWeight: "normal",
               textTransform: "capitalize",
-              borderRadius: "30px",
+              borderRadius: "40px",
             }}
           >
             Join Waitlist

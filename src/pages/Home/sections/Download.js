@@ -68,11 +68,11 @@ function Download() {
                     color="dark"
                     size="large"
                     sx={{
+                      py: "20px",
                       my: "10px",
-                      width: "270px",
-                      height: "90px",
+                      width: { xs: "75%", sm: "75%", md: "100%" },
                       textAlign: "center",
-                      fontSize: "1.2em",
+                      fontSize: "1em",
                       fontWeight: "normal",
                       textTransform: "capitalize",
                       borderRadius: "60px",
