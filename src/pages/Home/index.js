@@ -15,26 +15,21 @@ Coded by www.creative-tim.com
 */
 
 // @mui material components
-import Container from "@mui/material/Container";
-import Grid from "@mui/material/Grid";
 
 // import Card from "@mui/material/Card";
 
 // Material Kit 2 React components
 import MKBox from "components/MKBox";
-import MKTypography from "components/MKTypography";
 
-// About Us page sections
+// Page sections
 import Hero from "pages/Home/sections/Hero";
 import Information from "pages/Home/sections/Information";
 import Download from "pages/Home/sections/Download";
 import Investor from "pages/Home/sections/Investor";
-import Newsletter from "pages/Home/sections/Newsletter";
+import CenteredFooter from "components/Footers/CenteredFooter";
 
 // Images
 import bgImage from "assets/images/backgroundClouds.png";
-import DefaultNavbar from "examples/Navbars/DefaultNavbar";
-import routes from "routes";
 
 function Home() {
   return (
@@ -58,6 +53,7 @@ function Home() {
         <Information />
         <Download />
         <Investor />
+        <CenteredFooter />
       </MKBox>
     </>
   );
