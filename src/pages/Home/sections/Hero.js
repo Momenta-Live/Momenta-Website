@@ -15,6 +15,7 @@ function Hero() {
     <MKBox
       pt={20}
       pb={5}
+      mt={-1}
       sx={{
         width: "100%",
         height: "100%",

@@ -29,7 +29,7 @@ import Investor from "pages/Home/sections/Investor";
 import CenteredFooter from "components/Footers/CenteredFooter";
 
 // Images
-import bgImage from "assets/images/backgroundClouds.png";
+import backdrop from "assets/images/backdrop.png";
 
 function Home() {
   return (
@@ -42,7 +42,7 @@ function Home() {
             `${linearGradient(
               rgba(gradients.dark.main, 0),
               rgba(gradients.dark.state, 0)
-            )}, url(${bgImage})`,
+            )}, url(${backdrop})`,
           backgroundSize: { xs: "cover", md: "cover" },
           backgroundPosition: { xs: "center", sm: "center", md: "top" },
           display: "grid",
