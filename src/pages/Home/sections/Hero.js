@@ -13,9 +13,11 @@ import { TypeAnimation } from "react-type-animation";
 function Hero() {
   return (
     <MKBox
+      pt={20}
+      pb={5}
       sx={{
         width: "100%",
-        height: "93vh",
+        height: "100%",
         margin: "auto",
       }}
     >
@@ -33,7 +35,6 @@ function Hero() {
           alignItems="center"
           flexDirection="column"
           sx={{
-            mx: "auto",
             textAlign: "center",
             height: "100%",
           }}
