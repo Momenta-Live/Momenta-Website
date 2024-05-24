@@ -30,7 +30,7 @@ function InfoCard({ image, title, description }) {
     <Card
       sx={{
         display: "flex",
-        minHeight: { xs: 320, sm: 300, md: 300 },
+        minHeight: { xs: 320, sm: 300, md: 320 },
       }}
     >
       <MKBox
