@@ -22,7 +22,7 @@ import Grid from "@mui/material/Grid";
 import Stack from "@mui/material/Stack";
 
 // @mui icons
-import FacebookIcon from "@mui/icons-material/Facebook";
+import LinkedInIcon from "@mui/icons-material/LinkedIn";
 import TwitterIcon from "@mui/icons-material/Twitter";
 import InstagramIcon from "@mui/icons-material/Instagram";
 
@@ -41,7 +41,7 @@ function CenteredFooter({ company, links, socials, light }) {
       component={Link}
       href={link.href}
       variant="body2"
-      color={light ? "white" : "secondary"}
+      color={light ? "white" : "black"}
       fontWeight="regular"
     >
       {link.name}
@@ -53,8 +53,9 @@ function CenteredFooter({ company, links, socials, light }) {
       key={social.link}
       component={Link}
       href={social.link}
+      target="_blank"
       variant="body2"
-      color={light ? "white" : "secondary"}
+      color={light ? "white" : "white"}
       fontWeight="regular"
     >
       {social.icon}
@@ -81,7 +82,7 @@ function CenteredFooter({ company, links, socials, light }) {
           </Stack>
         </Grid>
         <Grid item xs={12} lg={8} sx={{ textAlign: "center" }}>
-          <MKTypography variant="body2" color={light ? "white" : "secondary"}>
+          <MKTypography variant="body2" color={light ? "white" : "white"}>
             Copyright &copy; {year} by{" "}
             <MKTypography
               component={Link}
@@ -89,7 +90,7 @@ function CenteredFooter({ company, links, socials, light }) {
               target="_blank"
               rel="noreferrer"
               variant="body2"
-              color={light ? "white" : "secondary"}
+              color={light ? "white" : "white"}
             >
               {name}
             </MKTypography>
@@ -106,14 +107,17 @@ CenteredFooter.defaultProps = {
   company: { href: "", name: "Momenta" },
   links: [],
   socials: [
-    { icon: <FacebookIcon fontSize="large" />, link: "" },
+    {
+      icon: <InstagramIcon fontSize="large" />,
+      link: "https://www.instagram.com/momenta.live/",
+    },
     {
       icon: <TwitterIcon fontSize="large" />,
       link: "",
     },
     {
-      icon: <InstagramIcon fontSize="large" />,
-      link: "",
+      icon: <LinkedInIcon fontSize="large" />,
+      link: "https://www.linkedin.com/company/momentalive/",
     },
   ],
   light: false,
