@@ -88,6 +88,9 @@ function Investor() {
                   }}
                 >
                   <MKButton
+                    component="a"
+                    href="https://pdvlqkum4rr.typeform.com/to/t2vMSbQ9"
+                    target="_blank"
                     variant="gradient"
                     color="dark"
                     size="large"

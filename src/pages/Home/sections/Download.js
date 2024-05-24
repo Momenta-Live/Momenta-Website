@@ -49,6 +49,9 @@ function Download() {
                   }}
                 >
                   <MKButton
+                    component="a"
+                    href="https://pdvlqkum4rr.typeform.com/to/djXaEtl2"
+                    target="_blank"
                     variant="gradient"
                     color="dark"
                     size="large"
