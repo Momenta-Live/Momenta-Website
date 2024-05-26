@@ -25,6 +25,7 @@ import Stack from "@mui/material/Stack";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
 import TwitterIcon from "@mui/icons-material/Twitter";
 import InstagramIcon from "@mui/icons-material/Instagram";
+import MailIcon from "@mui/icons-material/Mail";
 
 // Material Kit 2 React components
 import MKBox from "components/MKBox";
@@ -104,7 +105,7 @@ function CenteredFooter({ company, links, socials, light }) {
 
 // Setting default values for the props of CenteredFooter
 CenteredFooter.defaultProps = {
-  company: { href: "", name: "Momenta" },
+  company: { href: "mailto:info@momenta.live", name: "Momenta" },
   links: [],
   socials: [
     {
@@ -118,6 +119,10 @@ CenteredFooter.defaultProps = {
     {
       icon: <LinkedInIcon fontSize="large" />,
       link: "https://www.linkedin.com/company/momentalive/",
+    },
+    {
+      icon: <MailIcon fontSize="large" />,
+      link: "mailto:info@momenta.live",
     },
   ],
   light: false,
