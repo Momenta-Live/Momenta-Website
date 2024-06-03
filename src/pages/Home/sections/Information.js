@@ -9,10 +9,10 @@ import MKBox from "components/MKBox";
 import InfoCard from "components/Cards/InfoCards/InfoCard";
 
 // Images
-import IconCreepBlock from "assets/images/IconCreepBlock.png";
-import IconInvisibleMode from "assets/images/IconInvisibleMode.png";
-import IconQuickConnect from "assets/images/IconQuickConnect.png";
-import IconGoodTimesOnly from "assets/images/IconGoodTimesOnly.png";
+import IconCreepBlock from "assets/images/IconCreepBlock.svg";
+import IconInvisibleMode from "assets/images/IconInvisibleMode.svg";
+import IconQuickConnect from "assets/images/IconQuickConnect.svg";
+import IconGoodTimesOnly from "assets/images/IconGoodTimesOnly.svg";
 
 function Information() {
   return (
@@ -35,7 +35,7 @@ function Information() {
                 className="CustomInfoCard"
                 image={IconCreepBlock}
                 title="Creep Block"
-                description="Like a superhero, our Al spots and blocks the bad guys so you can chat worry-free."
+                description="Like a detective, our AI spots and blocks the bad guys so you can chat worry-free."
               />
             </MKBox>
           </Grid>
@@ -44,7 +44,7 @@ function Information() {
               <InfoCard
                 image={IconInvisibleMode}
                 title="Invisible Mode"
-                description="We keep you hidden so you can share without a care."
+                description="We keep you hidden and your data private so you can share without a care."
               />
             </MKBox>
           </Grid>
@@ -53,7 +53,7 @@ function Information() {
               <InfoCard
                 image={IconQuickConnect}
                 title="Quick Connect"
-                description="No waiting around here! We match you fast with people who get you."
+                description="No waiting around here! We match you fast with people who get you based on your filters."
               />
             </MKBox>
           </Grid>
@@ -62,7 +62,7 @@ function Information() {
               <InfoCard
                 image={IconGoodTimesOnly}
                 title="Good Times Only"
-                description="We're bringing back the fun of 2016! Fuel your talks and keep the laughs going."
+                description="Remember the fun of 2016? We're bringing it back! Start matches and fuel your talks!"
               />
             </MKBox>
           </Grid>
