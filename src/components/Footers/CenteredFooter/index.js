@@ -30,6 +30,7 @@ import MailIcon from "@mui/icons-material/Mail";
 // Material Kit 2 React components
 import MKBox from "components/MKBox";
 import MKTypography from "components/MKTypography";
+import MKButton from "components/MKButton";
 
 function CenteredFooter({ company, links, socials, light }) {
   const { href, name } = company;
@@ -50,17 +51,9 @@ function CenteredFooter({ company, links, socials, light }) {
   ));
 
   const renderSocials = socials.map((social) => (
-    <MKTypography
-      key={social.link}
-      component={Link}
-      href={social.link}
-      target="_blank"
-      variant="body2"
-      color={light ? "white" : "white"}
-      fontWeight="regular"
-    >
-      {social.icon}
-    </MKTypography>
+    <MKButton key={social.link} component={Link} href={social.link} target="_blank" variant="body2">
+      <MKTypography color="white">{social.icon}</MKTypography>
+    </MKButton>
   ));
 
   return (
@@ -77,12 +70,12 @@ function CenteredFooter({ company, links, socials, light }) {
             {renderLinks}
           </Stack>
         </Grid>
-        <Grid item xs={12} lg={8} mb={4}>
+        <Grid item xs={12} lg={8} mb={3}>
           <Stack display="flex" direction="row" justifyContent="center" spacing={3} mt={1} mb={3}>
             {renderSocials}
           </Stack>
         </Grid>
-        <Grid item xs={12} lg={8} sx={{ textAlign: "center" }} mb={2}>
+        <Grid item xs={12} lg={8} sx={{ textAlign: "center" }}>
           <MKTypography variant="body2" color={light ? "white" : "white"}>
             Copyright &copy; {year} by{" "}
             <MKTypography
