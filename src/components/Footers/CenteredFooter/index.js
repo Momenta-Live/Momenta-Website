@@ -114,7 +114,7 @@ CenteredFooter.defaultProps = {
     },
     {
       icon: <TwitterIcon fontSize="large" />,
-      link: "",
+      link: "https://x.com/Momenta_Live_",
     },
     {
       icon: <LinkedInIcon fontSize="large" />,
