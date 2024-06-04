@@ -57,7 +57,6 @@ function DownloadCard({ image, title }) {
         <MKTypography
           display="inline"
           variant="h5"
-          textTransform="capitalize"
           fontWeight="regular"
           sx={{
             display: "flex",
