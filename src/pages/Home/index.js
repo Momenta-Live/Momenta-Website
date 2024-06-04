@@ -8,7 +8,7 @@ import Investor from "pages/Home/sections/Investor";
 import CenteredFooter from "components/Footers/CenteredFooter";
 
 // Images
-import backdrop from "assets/images/3dbg.png";
+import backdrop from "assets/images/cloud_backdrop.png";
 
 function Home() {
   return (
