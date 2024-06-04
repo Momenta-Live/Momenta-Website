@@ -89,7 +89,7 @@ function Investor() {
                 >
                   <MKButton
                     component="a"
-                    href="https://pdvlqkum4rr.typeform.com/to/t2vMSbQ9"
+                    href="https://swp3137cdbz.typeform.com/to/HSBLJ1ho"
                     target="_blank"
                     variant="gradient"
                     color="dark"
