@@ -64,7 +64,7 @@ function CenteredFooter({ company, links, socials, light }) {
   ));
 
   return (
-    <MKBox component="footer" pt={3} pb={12}>
+    <MKBox component="footer" pt={2} pb={4}>
       <Grid container justifyContent="center">
         <Grid item xs={10} lg={8}>
           <Stack
@@ -77,12 +77,12 @@ function CenteredFooter({ company, links, socials, light }) {
             {renderLinks}
           </Stack>
         </Grid>
-        <Grid item xs={12} lg={8}>
+        <Grid item xs={12} lg={8} mb={4}>
           <Stack display="flex" direction="row" justifyContent="center" spacing={3} mt={1} mb={3}>
             {renderSocials}
           </Stack>
         </Grid>
-        <Grid item xs={12} lg={8} sx={{ textAlign: "center" }}>
+        <Grid item xs={12} lg={8} sx={{ textAlign: "center" }} mb={2}>
           <MKTypography variant="body2" color={light ? "white" : "white"}>
             Copyright &copy; {year} by{" "}
             <MKTypography
