@@ -9,10 +9,10 @@ import MKBox from "components/MKBox";
 import InfoCard from "components/Cards/InfoCards/InfoCard";
 
 // Images
-import IconCreepBlock from "assets/images/IconCreepBlock.svg";
-import IconInvisibleMode from "assets/images/IconInvisibleMode.svg";
-import IconQuickConnect from "assets/images/IconQuickConnect.svg";
-import IconGoodTimesOnly from "assets/images/IconGoodTimesOnly.svg";
+import IconCreepBlock from "assets/images/ManDetective.svg";
+import IconInvisibleMode from "assets/images/Ghost.svg";
+import IconQuickConnect from "assets/images/DashingAway.svg";
+import IconGoodTimesOnly from "assets/images/CallMeHand.svg";
 
 function Information() {
   return (

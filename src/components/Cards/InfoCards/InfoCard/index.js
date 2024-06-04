@@ -39,7 +39,7 @@ function InfoCard({ image, title, description }) {
         borderRadius="lg"
         sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}
       >
-        <MKBox component="img" src={image} alt={title} width="25%" />
+        <MKBox component="img" src={image} alt={title} width="22%" />
       </MKBox>
       <MKBox p={1} textAlign="center" height="50%">
         <MKTypography display="inline" variant="h5" textTransform="capitalize" fontWeight="regular">
