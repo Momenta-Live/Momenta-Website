@@ -35,7 +35,7 @@ function Information() {
                 className="CustomInfoCard"
                 image={IconCreepBlock}
                 title="Creep Block"
-                description="Like a detective, our AI spots and blocks the bad guys so you can chat worry-free."
+                description="Like a detective, our AI model spots and blocks predators so you can chat worry-free."
               />
             </MKBox>
           </Grid>
@@ -44,7 +44,7 @@ function Information() {
               <InfoCard
                 image={IconInvisibleMode}
                 title="Invisible Mode"
-                description="We keep you hidden and your data private so you can share without a care."
+                description="Your privacy, our priority! We ensure your privacy so you can share with confidence."
               />
             </MKBox>
           </Grid>
