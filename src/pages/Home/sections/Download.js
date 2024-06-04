@@ -34,7 +34,7 @@ function Download() {
                     <DownloadCard image={IconGoogle} title="Download Google" />
                   </MKBox>
                   <MKBox p={2} textAlign="center" height="50%">
-                    <DownloadCard image={IconIOS} title="Download IOS" />
+                    <DownloadCard image={IconIOS} title="Download iOS" />
                   </MKBox>
                 </MKBox>
               </Grid>
