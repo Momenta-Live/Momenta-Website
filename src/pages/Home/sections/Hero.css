@@ -30,6 +30,7 @@
 
 .arrow:hover {
     animation: none; /* Stop bouncing animation on hover */
+    height: 40px;
 }
 
 .fade-out {
