@@ -64,7 +64,7 @@ function CenteredFooter({ company, links, socials, light }) {
   ));
 
   return (
-    <MKBox component="footer" py={6}>
+    <MKBox component="footer" pt={3} pb={12}>
       <Grid container justifyContent="center">
         <Grid item xs={10} lg={8}>
           <Stack
