@@ -1,3 +1,5 @@
+import React, { useState, useEffect } from "react";
+
 // @mui material components
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
@@ -9,16 +11,44 @@ import MKButton from "components/MKButton";
 import { TypeAnimation } from "react-type-animation";
 
 // Images
+import arrow from "assets/images/tripdownArrow.png";
+import "pages/Home/sections/Hero.css";
 
 function Hero() {
+  const [visible, setVisible] = useState(true);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 0) {
+        setVisible(false);
+      } else {
+        setVisible(true);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    // Clean up the event listener on component unmount
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
+  const handleScrollDown = () => {
+    window.scrollTo({
+      top: window.innerHeight, // Scroll down by one viewport height
+      behavior: "smooth", // Smooth scrolling
+    });
+  };
+
   return (
     <MKBox
-      pt={20}
-      pb={5}
+      pt={0}
+      pb={0}
       mt={-1}
       sx={{
         width: "100%",
-        height: "100%",
+        height: "100vh",
         margin: "auto",
       }}
     >
@@ -55,7 +85,7 @@ function Hero() {
           >
             No Creeps, Just Peeps
           </MKTypography>
-          <MKBox minHeight={"120px"}>
+          <MKBox minHeight={"80px"}>
             <TypeAnimation
               sequence={[
                 // Same substring at the start will only be typed out once, initially
@@ -69,7 +99,7 @@ function Hero() {
               wrapper="span"
               speed={30}
               style={{
-                fontSize: "1em",
+                fontSize: "1.05em",
                 display: "inline-block",
                 color: "white",
               }}
@@ -99,6 +129,9 @@ function Hero() {
           </MKButton>
         </Grid>
       </Container>
+      <div className={`arrowSection ${!visible ? "fade-out" : ""}`}>
+        <img className="arrow" src={arrow} alt="arrow" onClick={handleScrollDown} />
+      </div>
     </MKBox>
   );
 }

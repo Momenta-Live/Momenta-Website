@@ -1,0 +1,33 @@
+.arrowSection {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    margin-top: 2%;
+    height: 15%;
+}
+
+@keyframes bouncing {
+    0% {bottom: 0;}
+    50% {bottom: 10px;}
+    100% {bottom: 0;}
+}
+
+.arrow {
+    animation: bouncing 2s infinite ease-in-out;
+    bottom: 0;
+    display: block;
+    height: 30px;
+    width: 40px;
+    position: relative;
+    opacity: 0.4;
+    cursor: pointer;
+}
+
+.fade-out {
+    opacity: 0;
+    transition: 0.3s all ease-out;
+}
