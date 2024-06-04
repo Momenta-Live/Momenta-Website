@@ -25,6 +25,11 @@
     position: relative;
     opacity: 0.4;
     cursor: pointer;
+    border-radius: 30%; /* Make the element circular */
+}
+
+.arrow:hover {
+    animation: none; /* Stop bouncing animation on hover */
 }
 
 .fade-out {
