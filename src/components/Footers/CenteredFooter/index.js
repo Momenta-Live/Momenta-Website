@@ -98,7 +98,7 @@ function CenteredFooter({ company, links, socials, light }) {
 
 // Setting default values for the props of CenteredFooter
 CenteredFooter.defaultProps = {
-  company: { href: "mailto:info@momenta.live", name: "Momenta" },
+  company: { href: "mailto:info@momenta.live", name: "Momenta Live Inc" },
   links: [],
   socials: [
     {

@@ -50,7 +50,6 @@ function Investor() {
                   <MKTypography
                     display="inline"
                     variant="body1"
-                    textTransform="capitalize"
                     fontWeight="regular"
                     color="white"
                     sx={{
@@ -65,7 +64,6 @@ function Investor() {
                     color="white"
                     display="inline"
                     variant="body1"
-                    textTransform="capitalize"
                     fontWeight="regular"
                     sx={{
                       display: "flex",
@@ -73,7 +71,7 @@ function Investor() {
                       justifyContent: { xs: "center", sm: "center", md: "end" },
                     }}
                   >
-                    our next funding Round?
+                    Our Next Funding Round?
                   </MKTypography>
                 </MKBox>
               </Grid>
