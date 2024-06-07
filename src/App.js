@@ -1,19 +1,7 @@
-/**
-=========================================================
-* Material Kit 2 React - v2.1.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/material-kit-react
-* Copyright 2023 Creative Tim (https://www.creative-tim.com)
-
-Coded by www.creative-tim.com
-
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
-
+/* eslint-disable no-unused-vars */
 import { useEffect } from "react";
+import { useWeb3React } from "@web3-react/core";
+import { AccountContext, EnvContext, SocketContext, Web3Context } from "context";
 
 // react-router components
 import { Routes, Route, Navigate, useLocation } from "react-router-dom";
@@ -25,6 +13,7 @@ import CssBaseline from "@mui/material/CssBaseline";
 // Material Kit 2 React themes
 import theme from "assets/theme";
 import Home from "layouts/pages/Home";
+import Video from "layouts/pages/Video";
 
 // Material Kit 2 React routes
 import routes from "routes";
@@ -57,6 +46,7 @@ export default function App() {
       <Routes>
         {getRoutes(routes)}
         <Route path="/" element={<Home />} />
+        <Route path="/video" element={<Video />} />
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </ThemeProvider>
