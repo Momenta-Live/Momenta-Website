@@ -1,7 +1,10 @@
 /* eslint-disable no-unused-vars */
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useWeb3React } from "@web3-react/core";
 import { AccountContext, EnvContext, SocketContext, Web3Context } from "context";
+import { InjectedConnector } from "@web3-react/injected-connector";
+import * as PushApi from "@pushprotocol/restapi";
+import { PushAPI } from "@pushprotocol/restapi";
 
 // react-router components
 import { Routes, Route, Navigate, useLocation } from "react-router-dom";
@@ -21,11 +24,43 @@ import routes from "routes";
 export default function App() {
   const { pathname } = useLocation();
 
+  const injected = new InjectedConnector({
+    supportedChainIds: [
+      1, 3, 4, 11155111, 42, 137, 80002, 56, 97, 10, 11155420, 2442, 1101, 421614, 42161, 122, 123,
+      80085,
+    ],
+  });
+
+  const { account, library, active, chainId, activate } = useWeb3React();
+
+  console.log("library in App", library);
+  const [env, setEnv] = useState("prod");
+  const [isCAIP, setIsCAIP] = useState(false);
+  const [signer, setSigner] = useState();
+  const [user, setUser] = useState();
+  const [pushUser, setPushUser] = useState();
+
   // Setting page scroll to 0 when changing the route
   useEffect(() => {
     document.documentElement.scrollTop = 0;
     document.scrollingElement.scrollTop = 0;
   }, [pathname]);
+
+  useEffect(() => {
+    (async () => {
+      if (!account || !env || !library) return;
+
+      const user = await PushApi.user.get({ account: account, env });
+      const librarySigner = await library.getSigner(account);
+      const pushUser = await PushAPI.initialize({
+        env: env,
+        account: account,
+        alpha: { feature: ["SCALABILITY_V2"] },
+      });
+      setPushUser(pushUser);
+      setSigner(librarySigner);
+    })();
+  }, [account, env, library]);
 
   const getRoutes = (allRoutes) =>
     allRoutes.map((route) => {
@@ -41,14 +76,18 @@ export default function App() {
     });
 
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <Routes>
-        {getRoutes(routes)}
-        <Route path="/" element={<Home />} />
-        <Route path="/video" element={<Video />} />
-        <Route path="*" element={<Navigate to="/" />} />
-      </Routes>
-    </ThemeProvider>
+    <EnvContext.Provider value={{ env, isCAIP }}>
+      <Web3Context.Provider value={{ account, active, library, chainId }}>
+        <ThemeProvider theme={theme}>
+          <CssBaseline />
+          <Routes>
+            {getRoutes(routes)}
+            <Route path="/" element={<Home />} />
+            <Route path="/video" element={<Video />} />
+            <Route path="*" element={<Navigate to="/" />} />
+          </Routes>
+        </ThemeProvider>
+      </Web3Context.Provider>
+    </EnvContext.Provider>
   );
 }

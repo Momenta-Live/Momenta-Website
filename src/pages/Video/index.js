@@ -7,7 +7,18 @@ import VideoSection from "pages/Video/sections/Video";
 // Images
 import backdrop from "assets/images/cloud_backdrop.png";
 
+// Custom Components
+import ConnectButtonComp from "components/Connect/ConnectButtonComp";
+
+import { useWeb3React } from "@web3-react/core";
+
 function Video() {
+  const checkForWeb3Data = ({ library, active, account, chainId }) => {
+    return library && active && account && chainId;
+  };
+
+  const { account, library, active, chainId } = useWeb3React();
+
   return (
     <>
       <MKBox
@@ -25,7 +36,13 @@ function Video() {
           placeItems: "center",
         }}
       >
-        <VideoSection />
+        <ConnectButtonComp />
+        {checkForWeb3Data({ active, account, library, chainId }) ? (
+          <VideoSection />
+        ) : (
+          <div>Connect to a wallet</div>
+        )}
+        ;
       </MKBox>
     </>
   );

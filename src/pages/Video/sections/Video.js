@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { ethers } from "ethers";
-import { CONSTANTS, PushAPI, TYPES } from "@pushprotocol/restapi";
+import { CONSTANTS, PushAPI } from "@pushprotocol/restapi";
 import styled, { keyframes } from "styled-components";
 
 import IncomingVideoModal from "components/Video/IncomingVideoModal";
@@ -12,10 +12,15 @@ const Video = () => {
   const { account, library } = useContext(Web3Context);
   const { env } = useContext(EnvContext);
 
+  console.log("library", library);
+
   const librarySigner = library.getSigner();
 
+  console.log("librarySigner", librarySigner);
+  console.log("librarySigner getAddress", librarySigner.getAddress);
+
   const aliceVideoCall = useRef();
-  const [data, setData] = useState < TYPES.VIDEO.DATA > CONSTANTS.VIDEO.INITIAL_DATA;
+  const [data, setData] = useState(CONSTANTS.VIDEO.INITIAL_DATA);
   const [incomingCallerAddress, setIncomingCallerAddress] = useState(null);
   const [isPushStreamConnected, setIsPushStreamConnected] = useState(false);
 
