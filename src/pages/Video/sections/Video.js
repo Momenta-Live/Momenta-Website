@@ -51,7 +51,21 @@ const Video = () => {
     [library],
     [logs]
   );
+  const handleToggleAudio = () => {
+    if (data?.incoming[0]) {
+      const newAudioState = !data?.local.audio;
+      aliceVideoCall.current?.config({ audio: newAudioState });
+      console.log(`Audio is now ${newAudioState ? "on" : "off"}`);
+    }
+  };
 
+  const handleToggleVideo = () => {
+    if (data?.incoming[0]) {
+      const newVideoState = !data?.local.video;
+      aliceVideoCall.current?.config({ video: newVideoState });
+      console.log(`Video is now ${newVideoState ? "on" : "off"}`);
+    }
+  };
   const initializePushAPI = async () => {
     console.log("initializePushAPI");
     if (!librarySigner) return;
@@ -288,7 +302,7 @@ const Video = () => {
           <input
             onChange={(e) => changeRecipientAddress(e.target.value)}
             value={recipientAddress}
-            style={{ display: "flex", flex: "1" }}
+            style={{ width: "300px" }} // Set a fixed width for the input field
             placeholder="recipient address"
             type="text"
           />
@@ -330,23 +344,6 @@ const Video = () => {
           <button onClick={endCall} disabled={data?.incoming[0]?.status !== 3}>
             End Video Call
           </button>
-          <button
-            disabled={!data?.incoming[0]}
-            onClick={() => {
-              aliceVideoCall.current?.config({ video: !data?.local.video }); // This function is used to toggle the video on/off
-            }}
-          >
-            Toggle Video
-          </button>
-
-          <button
-            disabled={!data?.incoming[0]}
-            onClick={() => {
-              aliceVideoCall.current?.config({ audio: !data?.local.audio }); // This function is used to toggle the audio on/off
-            }}
-          >
-            Toggle Audio
-          </button>
 
           {data?.incoming[0]?.status === CONSTANTS.VIDEO.STATUS.CONNECTED && (
             <Toast message="Video Call Connected" bg="#4caf50" />
@@ -370,29 +367,34 @@ const Video = () => {
 
         <HContainer>
           <VContainer>
-            <h2 style={{ padding: "10px 0" }}>Local Video</h2>
             <VideoFrame>
+              <NameWrapperLeft>
+                <UserSection name="Aliyah" flag="🇺🇸" />
+              </NameWrapperLeft>
               <VideoPlayer stream={data?.local.stream} isMuted={true} />
             </VideoFrame>
+            <h2 style={{ padding: "10px 0" }}>Local Video</h2>
           </VContainer>
 
           <VContainer>
-            <h2 style={{ padding: "10px 0" }}>Incoming Video</h2>
             <VideoFrame>
+              <NameWrapperRight>
+                <UserSection name="Victor" flag="🇬🇧" />
+              </NameWrapperRight>
               <VideoPlayer stream={data?.incoming[0].stream} isMuted={false} />
             </VideoFrame>
+            <h2 style={{ padding: "10px 0" }}>Incoming Video</h2>
           </VContainer>
-        </HContainer>
-
-        <HContainer>
-          <UserSection name="Aliyah" />
-          <UserSection name="Victor" />
         </HContainer>
 
         <MessageInputArea style={{ display: "flex", alignItems: "center" }} />
       </div>
 
-      <BottomNavBar style={{ button: { fontSize: "1.2em" } }} />
+      <BottomNavBar
+        onToggleAudio={handleToggleAudio}
+        onToggleVideo={handleToggleVideo}
+        style={{ button: { fontSize: "1.2em" } }}
+      />
     </div>
   );
 };
@@ -432,7 +434,21 @@ const VideoFrame = styled.div`
   position: relative;
   background-color: #000;
 `;
+const NameWrapperLeft = styled.div`
+  position: absolute;
+  top: 0.5px; /* Adjust as necessary to move the text higher */
+  left: 5px; /* Adjust as necessary */
+  display: flex;
+  justify-content: flex-start;
+`;
 
+const NameWrapperRight = styled.div`
+  position: absolute;
+  top: 0.5px; /* Adjust as necessary to move the text higher */
+  right: 5px; /* Adjust as necessary */
+  display: flex;
+  justify-content: flex-end;
+`;
 const spin = keyframes`
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }

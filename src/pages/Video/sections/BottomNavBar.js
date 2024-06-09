@@ -1,34 +1,32 @@
 import React from "react";
 import { Box, IconButton, Typography } from "@mui/material";
-import MicIcon from "@mui/icons-material/Mic";
-import VideocamIcon from "@mui/icons-material/Videocam";
-import SettingsIcon from "@mui/icons-material/Settings";
-import EmojiEmotionsIcon from "@mui/icons-material/EmojiEmotions";
-import CardGiftcardIcon from "@mui/icons-material/CardGiftcard";
-import HourglassEmptyIcon from "@mui/icons-material/HourglassEmpty";
-import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
 import { makeStyles } from "@mui/styles";
+import PropTypes from "prop-types";
 
 const useStyles = makeStyles(() => ({
   bottomBar: {
     display: "flex",
     justifyContent: "space-around",
     alignItems: "center",
-    backgroundColor: "transparent",
+    backgroundColor: "transparent", // Keep the bottom bar transparent
     color: "#fff",
     padding: "10px 0",
   },
-  iconButton: {
-    color: "#fff",
-    backgroundColor: "#000", // Ensure all buttons have a black background
-    borderRadius: "50%", // Circular shape for the buttons
+  iconContainer: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: "50%",
+    backgroundColor: "#000",
     padding: "10px",
     margin: "5px",
-    border: "2px solid #000", // Solid black border for consistency
-    "&:hover": {
-      backgroundColor: "#000",
-      boxShadow: "none",
-    },
+    border: "2px solid #000",
+    width: "64px", // Fixed size for consistency
+    height: "64px", // Fixed size for consistency
+  },
+  icon: {
+    color: "#fff", // Ensure icons are white
+    fontSize: "2rem", // Adjust the icon size
   },
   timer: {
     color: "#fff",
@@ -45,40 +43,68 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const BottomNavBar = () => {
+const BottomNavBar = ({ onToggleAudio, onToggleVideo }) => {
   const classes = useStyles();
 
   return (
     <Box className={classes.bottomBar}>
-      <IconButton className={classes.iconButton}>
-        <span role="img" aria-label="Alert" style={{ fontSize: "24px" }}>
-          🚨
-        </span>
-      </IconButton>
-      <IconButton className={classes.iconButton}>
-        <MicIcon fontSize="large" />
-      </IconButton>
-      <IconButton className={classes.iconButton}>
-        <AccountBalanceIcon fontSize="large" />
-      </IconButton>
-      <IconButton className={classes.iconButton}>
-        <VideocamIcon fontSize="large" />
-      </IconButton>
-      <IconButton className={classes.iconButton}>
-        <HourglassEmptyIcon fontSize="large" />
-      </IconButton>
+      <Box className={classes.iconContainer}>
+        <IconButton className={classes.iconButton}>
+          <span role="img" aria-label="Alert" className={classes.icon}>
+            🚨
+          </span>
+        </IconButton>
+      </Box>
+      <Box className={classes.iconContainer}>
+        <IconButton className={classes.iconButton} onClick={onToggleAudio}>
+          <span role="img" aria-label="Alert" className={classes.icon}>
+            🎙️
+          </span>
+        </IconButton>
+      </Box>
+      <Box className={classes.iconContainer}>
+        <IconButton className={classes.iconButton} onClick={onToggleVideo}>
+          <span role="img" aria-label="Alert" className={classes.icon}>
+            📷
+          </span>
+        </IconButton>
+      </Box>
+      <Box className={classes.iconContainer}>
+        <IconButton className={classes.iconButton}>
+          <span role="img" aria-label="Alert" className={classes.icon}>
+            ⏳
+          </span>
+        </IconButton>
+      </Box>
       <Typography className={classes.timer}>03:00</Typography>
-      <IconButton className={classes.iconButton}>
-        <EmojiEmotionsIcon fontSize="large" />
-      </IconButton>
-      <IconButton className={classes.iconButton}>
-        <CardGiftcardIcon fontSize="large" />
-      </IconButton>
-      <IconButton className={classes.iconButton}>
-        <SettingsIcon fontSize="large" />
-      </IconButton>
+      <Box className={classes.iconContainer}>
+        <IconButton className={classes.iconButton}>
+          <span role="img" aria-label="Alert" className={classes.icon}>
+            🎉
+          </span>
+        </IconButton>
+      </Box>
+      <Box className={classes.iconContainer}>
+        <IconButton className={classes.iconButton}>
+          <span role="img" aria-label="Alert" className={classes.icon}>
+            🎁
+          </span>
+        </IconButton>
+      </Box>
+      <Box className={classes.iconContainer}>
+        <IconButton className={classes.iconButton}>
+          <span role="img" aria-label="Alert" className={classes.icon}>
+            🏦
+          </span>
+        </IconButton>
+      </Box>
     </Box>
   );
+};
+
+BottomNavBar.propTypes = {
+  onToggleAudio: PropTypes.func.isRequired,
+  onToggleVideo: PropTypes.func.isRequired,
 };
 
 export default BottomNavBar;

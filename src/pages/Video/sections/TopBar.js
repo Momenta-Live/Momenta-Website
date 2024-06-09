@@ -1,13 +1,12 @@
 import React from "react";
 import { Typography, IconButton, Button, Box, AppBar, Toolbar } from "@mui/material";
-import BatteryChargingFullIcon from "@mui/icons-material/BatteryChargingFull";
-import SkipNextIcon from "@mui/icons-material/SkipNext";
 import { makeStyles } from "@mui/styles";
 
 const useStyles = makeStyles(() => ({
   appBar: {
     backgroundColor: "transparent",
     boxShadow: "none",
+    position: "relative",
   },
   container: {
     display: "flex",
@@ -20,31 +19,30 @@ const useStyles = makeStyles(() => ({
     display: "flex",
     alignItems: "center",
     color: "#000",
+    padding: "0 40px", // Further reduced padding to push prompt bar closer
+  },
+  icon: {
+    fontSize: "50px", // Default large size
   },
   promptContainer: {
     display: "flex",
     alignItems: "center",
     backgroundColor: "#fff",
     borderRadius: "4px",
-    flexGrow: 1,
-    marginLeft: "16px",
-    marginRight: "16px",
-    padding: "8px",
+    padding: "4px 8px", // Adjusted padding
+    marginLeft: "5px", // Further reduced margin to push closer to battery
+    marginRight: "140px", // Add margin to the right for spacing
   },
   promptText: {
-    flexGrow: 1,
     wordWrap: "break-word",
   },
-  skipButton: {
-    display: "flex",
-    alignItems: "center",
-    backgroundColor: "#000",
-    color: "#fff",
-    padding: "8px",
-    borderRadius: "4px",
+  skipButtonContainer: {
+    backgroundColor: "#000", // Black background for the box
+    borderRadius: "8px", // Rounded corners for the box
+    padding: "13px 20px", // Padding inside the box
   },
-  skipText: {
-    marginLeft: "4px",
+  skipButton: {
+    color: "#fff", // White text
   },
   refreshButton: {
     backgroundColor: "#fff",
@@ -65,23 +63,27 @@ const TopBar = () => {
     <AppBar position="static" className={classes.appBar}>
       <Toolbar className={classes.container}>
         <div className={classes.batteryContainer}>
-          <BatteryChargingFullIcon />
-          <Typography variant="h6" style={{ marginLeft: "8px" }}>
-            Battery
-          </Typography>
+          <span role="img" aria-label="Battery" className={classes.icon}>
+            🔋
+          </span>
         </div>
-        <div className={classes.promptContainer}>
-          <Box className={classes.promptText}>What is your Favorite Drake Album? 👀</Box>
-          <Button className={classes.refreshButton}>
-            <span className={classes.refreshIcon}>🔄</span>
-          </Button>
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <div className={classes.promptContainer}>
+            <Box className={classes.promptText}>What is your Favorite Drake Album? 👀</Box>
+            <Button className={classes.refreshButton}>
+              <span style={{ fontSize: "35px" }} className={classes.refreshIcon}>
+                🔄
+              </span>
+            </Button>
+          </div>
+          <div className={classes.skipButtonContainer}>
+            <IconButton className={classes.skipButton}>
+              <Typography variant="button" style={{ fontSize: "24px", color: "#fff" }}>
+                Skip ⏭️
+              </Typography>
+            </IconButton>
+          </div>
         </div>
-        <IconButton className={classes.skipButton}>
-          <SkipNextIcon />
-          <Typography variant="button" className={classes.skipText}>
-            Skip
-          </Typography>
-        </IconButton>
       </Toolbar>
     </AppBar>
   );
