@@ -367,12 +367,15 @@ const Video = () => {
         <HContainer>
           <VContainer>
             <h2 style={{ padding: "10px 0" }}>Local Video</h2>
-            <VideoPlayer stream={data?.local.stream} isMuted={true} />
+              <VideoPlayer stream={data?.local.stream} isMuted={true} />
+            </VideoFrame>
           </VContainer>
 
           <VContainer>
             <h2 style={{ padding: "10px 0" }}>Incoming Video</h2>
-            <VideoPlayer stream={data?.incoming[0].stream} isMuted={false} />
+            <VideoFrame>
+              <VideoPlayer stream={data?.incoming[0].stream} isMuted={false} />
+            </VideoFrame>
           </VContainer>
         </HContainer>
 
@@ -397,18 +400,39 @@ const Video = () => {
 
 const HContainer = styled.div`
   display: flex;
+  justify-content: center;
   gap: 20px;
   margin: 20px 40px;
+  flex-wrap: nowrap; /* Prevent wrapping */
+  @media (max-width: 1200px) {
+    flex-wrap: wrap; /* Allow wrapping on smaller screens */
+  }
 `;
 
 const VContainer = styled.div`
   display: flex;
-  gap: 10px;
   flex-direction: column;
-  width: fit-content;
-  height: fit-content;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  min-width: 48%; /* Adjust width percentage to ensure both containers fit side by side */
+  max-width: 48%; /* Adjust width percentage to ensure both containers fit side by side */
+  height: auto;
+  box-sizing: border-box;
+  aspect-ratio: 16 / 9; /* Maintain 16:9 aspect ratio */
+  @media (max-width: 1200px) {
+    min-width: 100%; /* Adjust for smaller screens */
+    max-width: 100%; /* Adjust for smaller screens */
+  }
 `;
 
+const VideoFrame = styled.div`
+  width: 100%;
+  height: 0;
+  padding-top: 56.25%; /* Aspect ratio for 1920x1080 */
+  position: relative;
+  background-color: #000;
+`;
 const spin = keyframes`
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }

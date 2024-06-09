@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types"; // Import PropTypes
 import { Box, Typography } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 
@@ -27,6 +28,10 @@ const UserSection = ({ name }) => {
       </Typography>
     </Box>
   );
+};
+
+UserSection.propTypes = {
+  name: PropTypes.string.isRequired, // Add propTypes validation for name
 };
 
 export default UserSection;
