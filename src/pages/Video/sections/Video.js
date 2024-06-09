@@ -367,6 +367,7 @@ const Video = () => {
         <HContainer>
           <VContainer>
             <h2 style={{ padding: "10px 0" }}>Local Video</h2>
+            <VideoFrame>
               <VideoPlayer stream={data?.local.stream} isMuted={true} />
             </VideoFrame>
           </VContainer>
