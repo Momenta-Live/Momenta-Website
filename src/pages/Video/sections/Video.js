@@ -33,20 +33,24 @@ const Video = () => {
   // Log all response
   const [logs, setLogs] = useState(["Logs as the response comes in"]);
 
-  useEffect(() => {
-    console.log("35 librarySigner useEffect", librarySigner);
-    const fetchSigner = async () => {
-      if (library && typeof library.getSigner === "function") {
-        librarySigner = await library.getSigner();
-        console.log("39 librarySigner", librarySigner);
-        initializePushAPI();
-      } else {
-        console.log("library does not have getSigner function");
-      }
-    };
+  useEffect(
+    () => {
+      console.log("35 librarySigner useEffect", librarySigner);
+      const fetchSigner = async () => {
+        if (library && typeof library.getSigner === "function") {
+          librarySigner = await library.getSigner();
+          console.log("39 librarySigner", librarySigner);
+          initializePushAPI();
+        } else {
+          console.log("library does not have getSigner function");
+        }
+      };
 
-    fetchSigner();
-  }, [library]);
+      fetchSigner();
+    },
+    [library],
+    [logs]
+  );
 
   const initializePushAPI = async () => {
     console.log("initializePushAPI");
@@ -387,13 +391,7 @@ const Video = () => {
 
         <MessageInputArea style={{ display: "flex", alignItems: "center" }} />
       </div>
-      <div>
-        <hr />
-        <h2>Logs</h2>
-        {logs.map((log, index) => (
-          <LogText key={index}>{JSON.stringify(log)}</LogText>
-        ))}
-      </div>
+
       <BottomNavBar style={{ button: { fontSize: "1.2em" } }} />
     </div>
   );
@@ -434,6 +432,7 @@ const VideoFrame = styled.div`
   position: relative;
   background-color: #000;
 `;
+
 const spin = keyframes`
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
@@ -476,12 +475,6 @@ const Cross = styled.div`
   &:after {
     transform: rotate(-45deg);
   }
-`;
-
-const LogText = styled.p`
-  font-family: "Courier New", Courier, monospace;
-  background-color: #ddd;
-  font-size: 12px;
 `;
 
 export default Video;
