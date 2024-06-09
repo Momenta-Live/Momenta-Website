@@ -21,15 +21,18 @@ const Video = () => {
   const [isPushStreamConnected, setIsPushStreamConnected] = useState(false);
 
   useEffect(() => {
-    // Check if library is defined and has the getSigner function
-    if (library && typeof library.getSigner === "function") {
-      librarySigner = library.getSigner();
-      console.log("librarySigner", librarySigner);
-    } else {
-      console.log("library does not have getSigner function");
-    }
+    console.log("35 librarySigner useEffect", librarySigner);
+    const fetchSigner = async () => {
+      if (library && typeof library.getSigner === "function") {
+        librarySigner = await library.getSigner();
+        console.log("39 librarySigner", librarySigner);
+        initializePushAPI();
+      } else {
+        console.log("library does not have getSigner function");
+      }
+    };
 
-    // Additional logic here if necessary
+    fetchSigner();
   }, [library]);
 
   const initializePushAPI = async () => {
@@ -88,13 +91,14 @@ const Video = () => {
 
   // Here we initialize the push video API, which is the first and important step to make video calls
   useEffect(() => {
+    console.log("initializePushAPI useEffect");
+    console.log("111 librarySigner", librarySigner);
     if (!librarySigner) return;
-    if (!librarySigner.getAddress) return;
     console.log("librarySigner", librarySigner);
     console.log("librarySigner getAddress", librarySigner.getAddress);
     if (data?.incoming[0]?.status !== CONSTANTS.VIDEO.STATUS.UNINITIALIZED) return; // data?.incoming[0]?.status will have a status of CONSTANTS.VIDEO.STATUS.UNINITIALIZED when the video call is not initialized, call ended or denied. So we Initialize the Push API here.
     initializePushAPI();
-  }, [env, library, account, data?.incoming[0]?.status]);
+  }, [env, librarySigner, account, data?.incoming[0]?.status]);
 
   useEffect(() => {
     // Additional logic here if necessary
