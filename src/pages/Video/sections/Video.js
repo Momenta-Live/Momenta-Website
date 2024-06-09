@@ -369,7 +369,7 @@ const Video = () => {
           <VContainer>
             <VideoFrame>
               <NameWrapperLeft>
-                <UserSection name="Aliyah" flag="🇺🇸" />
+                <UserSection name=" Aliyah" flag="🇺🇸" />
               </NameWrapperLeft>
               <VideoPlayer stream={data?.local.stream} isMuted={true} />
             </VideoFrame>
@@ -379,7 +379,7 @@ const Video = () => {
           <VContainer>
             <VideoFrame>
               <NameWrapperRight>
-                <UserSection name="Victor" flag="🇬🇧" />
+                <UserSection name=" Victor" flag="🇬🇧" />
               </NameWrapperRight>
               <VideoPlayer stream={data?.incoming[0].stream} isMuted={false} />
             </VideoFrame>
