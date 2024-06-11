@@ -8,7 +8,7 @@ import VideoSection from "pages/Video/sections/Video";
 import backdrop from "assets/images/cloud_backdrop.png";
 
 // Custom Components
-import ConnectButtonComp from "components/Connect/ConnectButtonComp";
+import ConnectWalletComp from "components/Connect/ConnectWalletComp";
 
 import { useWeb3React } from "@web3-react/core";
 
@@ -36,7 +36,7 @@ function Video() {
           placeItems: "center",
         }}
       >
-        <ConnectButtonComp />
+        <ConnectWalletComp />
         {checkForWeb3Data({ active, account, library, chainId }) ? (
           <VideoSection />
         ) : (
