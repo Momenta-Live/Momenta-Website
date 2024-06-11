@@ -60,8 +60,6 @@ function Hero() {
       >
         <Grid
           container
-          xs={12}
-          lg={12}
           justifyContent="center"
           alignItems="center"
           flexDirection="column"

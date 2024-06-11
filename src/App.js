@@ -5,6 +5,7 @@ import { AccountContext, EnvContext, SocketContext, Web3Context } from "context"
 import { InjectedConnector } from "@web3-react/injected-connector";
 import * as PushApi from "@pushprotocol/restapi";
 import { PushAPI } from "@pushprotocol/restapi";
+import { useSDKSocket } from "hooks";
 
 // react-router components
 import { Routes, Route, Navigate, useLocation } from "react-router-dom";
@@ -32,13 +33,12 @@ export default function App() {
   });
 
   const { account, library, active, chainId, activate } = useWeb3React();
-
-  console.log("library in App", library);
   const [env, setEnv] = useState("prod");
   const [isCAIP, setIsCAIP] = useState(false);
   const [signer, setSigner] = useState();
   const [user, setUser] = useState();
   const [pushUser, setPushUser] = useState();
+  const [pgpPrivateKey, setPgpPrivateKey] = useState("");
 
   // Setting page scroll to 0 when changing the route
   useEffect(() => {
@@ -75,18 +75,24 @@ export default function App() {
       return null;
     });
 
+  const socketData = useSDKSocket({ account, env, chainId, isCAIP });
+
   return (
     <EnvContext.Provider value={{ env, isCAIP }}>
       <Web3Context.Provider value={{ account, active, library, chainId }}>
-        <ThemeProvider theme={theme}>
-          <CssBaseline />
-          <Routes>
-            {getRoutes(routes)}
-            <Route path="/" element={<Home />} />
-            <Route path="/video" element={<Video />} />
-            <Route path="*" element={<Navigate to="/" />} />
-          </Routes>
-        </ThemeProvider>
+        <SocketContext.Provider value={socketData}>
+          <AccountContext.Provider value={{ pgpPrivateKey }}>
+            <ThemeProvider theme={theme}>
+              <CssBaseline />
+              <Routes>
+                {getRoutes(routes)}
+                <Route path="/" element={<Home />} />
+                <Route path="/video" element={<Video />} />
+                <Route path="*" element={<Navigate to="/" />} />
+              </Routes>
+            </ThemeProvider>
+          </AccountContext.Provider>
+        </SocketContext.Provider>
       </Web3Context.Provider>
     </EnvContext.Provider>
   );
