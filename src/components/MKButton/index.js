@@ -48,7 +48,7 @@ MKButton.defaultProps = {
 // Typechecking props for the MKButton
 MKButton.propTypes = {
   size: PropTypes.oneOf(["small", "medium", "large", "xLarge"]),
-  variant: PropTypes.oneOf(["text", "contained", "outlined", "gradient"]),
+  variant: PropTypes.oneOf(["text", "contained", "outlined", "gradient", ""]),
   color: PropTypes.oneOf([
     "default",
     "white",

@@ -29,11 +29,9 @@ const Video = () => {
   const [logs, setLogs] = useState(["Logs as the response comes in"]);
 
   useEffect(() => {
-    console.log("35 librarySigner useEffect", librarySigner);
     const fetchSigner = async () => {
       if (library && typeof library.getSigner === "function") {
         librarySigner = await library.getSigner();
-        console.log("39 librarySigner", librarySigner);
         initializePushAPI();
       } else {
         console.log("library does not have getSigner function");
@@ -49,6 +47,11 @@ const Video = () => {
     const user = await PushAPI.initialize(librarySigner, {
       env: env,
     });
+
+    // Check for errors in userAlice's initialization and handle them if any
+    if (user.errors.length > 0) {
+      console.log("Error initializing Push API", user.errors);
+    }
 
     const createdStream = await user.initStream([
       CONSTANTS.STREAM.VIDEO,
@@ -107,11 +110,14 @@ const Video = () => {
   // Here we initialize the push video API, which is the first and important step to make video calls
   useEffect(() => {
     console.log("initializePushAPI useEffect");
-    console.log("111 librarySigner", librarySigner);
-    if (!librarySigner) return;
-    console.log("librarySigner", librarySigner);
-    console.log("librarySigner getAddress", librarySigner.getAddress);
-    if (data?.incoming[0]?.status !== CONSTANTS.VIDEO.STATUS.UNINITIALIZED) return; // data?.incoming[0]?.status will have a status of CONSTANTS.VIDEO.STATUS.UNINITIALIZED when the video call is not initialized, call ended or denied. So we Initialize the Push API here.
+    if (!librarySigner) {
+      console.log("librarySigner not initialized");
+      return;
+    }
+    if (data?.incoming[0]?.status !== CONSTANTS.VIDEO.STATUS.UNINITIALIZED) {
+      console.log("data?.incoming[0]?.status", data?.incoming[0]?.status);
+      return; // data?.incoming[0]?.status will have a status of CONSTANTS.VIDEO.STATUS.UNINITIALIZED when the video call is not initialized, call ended or denied. So we Initialize the Push API here.
+    }
     initializePushAPI();
   }, [env, librarySigner, account, data?.incoming[0]?.status]);
 
@@ -137,7 +143,7 @@ const Video = () => {
       ]);
 
       // check if the recipient is a valid address
-      if (!ethers.isAddress(recipientAddress)) {
+      if (!ethers.utils.isAddress(recipientAddress)) {
         setLogs((prevLogs) => [
           `Recipient is not a valid address, for brevity, the example doesn't support all supported wallet standards`,
           ...prevLogs,
@@ -148,7 +154,6 @@ const Video = () => {
 
       // little hack to check if the user is connected to the recipient via chat
       console.log("pushUser", pushUser);
-      console.log("pushUser.chat", pushUser.chat);
       const response = await pushUser.chat.latest(recipientAddress);
       setLogs((prevLogs) => [`Response from the API is ${JSON.stringify(response)}`, ...prevLogs]);
 
@@ -160,10 +165,13 @@ const Video = () => {
         setIsValidUser(2);
       } else {
         try {
-          // also accept the request on the pretext if it's not accepted already
-          console.log("pushUser", pushUser);
-          console.log("pushUser.chat", pushUser.chat);
-          await pushUser.chat.accept(recipientAddress);
+          setLogs((prevLogs) => [
+            `Recipient wallet is connected to sender, attempting to connect`,
+            ...prevLogs,
+          ]);
+          // also accept the request on the pretext if it's not accepted alreadyS
+          const response = await pushUser.chat.accept(recipientAddress);
+          console.log("response", response);
         } catch (e) {
           setLogs((prevLogs) => [`Error while accepting the chat request, ${e}`, ...prevLogs]);
         }

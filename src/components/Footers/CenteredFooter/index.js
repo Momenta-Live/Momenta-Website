@@ -1,18 +1,3 @@
-/**
-=========================================================
-* Material Kit 2 React - v2.1.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/material-kit-react
-* Copyright 2023 Creative Tim (https://www.creative-tim.com)
-
-Coded by www.creative-tim.com
-
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
-
 // prop-types is a library for typechecking of props
 import PropTypes from "prop-types";
 
@@ -42,7 +27,6 @@ function CenteredFooter({ company, links, socials, light }) {
       key={link.name}
       component={Link}
       href={link.href}
-      variant="body2"
       color={light ? "white" : "black"}
       fontWeight="regular"
     >
@@ -51,7 +35,8 @@ function CenteredFooter({ company, links, socials, light }) {
   ));
 
   const renderSocials = socials.map((social) => (
-    <MKButton key={social.link} component={Link} href={social.link} target="_blank" variant="body2">
+    // eslint-disable-next-line prettier/prettier
+    <MKButton key={social.link} component={Link} href={social.link} target="_blank" variant="">
       <MKTypography color="white">{social.icon}</MKTypography>
     </MKButton>
   ));

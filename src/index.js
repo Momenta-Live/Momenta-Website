@@ -13,7 +13,9 @@ const root = ReactDOMClient.createRoot(container);
 
 root.render(
   <StrictMode>
-    <Web3ReactProvider getLibrary={(provider) => new ethers.BrowserProvider(provider)}>
+    <Web3ReactProvider
+      getLibrary={(provider) => new ethers.providers.Web3Provider(provider, "any")}
+    >
       <BrowserRouter>
         <App />
       </BrowserRouter>
