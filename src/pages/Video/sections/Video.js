@@ -8,6 +8,11 @@ import Toast from "components/Video/Toast";
 import VideoPlayer from "components/Video/VideoPlayer";
 import { EnvContext, Web3Context } from "context";
 
+import TopBar from "./TopBar";
+import BottomNavBar from "./BottomNavBar";
+import UserSection from "./UserSection";
+import MessageInputArea from "./MessageInputArea";
+
 const Video = () => {
   const { account, library } = useContext(Web3Context);
   const { env } = useContext(EnvContext);
@@ -28,19 +33,37 @@ const Video = () => {
   // Log all response
   const [logs, setLogs] = useState(["Logs as the response comes in"]);
 
-  useEffect(() => {
-    const fetchSigner = async () => {
-      if (library && typeof library.getSigner === "function") {
-        librarySigner = await library.getSigner();
-        initializePushAPI();
-      } else {
-        console.log("library does not have getSigner function");
-      }
-    };
+  useEffect(
+    () => {
+      const fetchSigner = async () => {
+        if (library && typeof library.getSigner === "function") {
+          librarySigner = await library.getSigner();
+          initializePushAPI();
+        } else {
+          console.log("library does not have getSigner function");
+        }
+      };
 
-    fetchSigner();
-  }, [library]);
+      fetchSigner();
+    },
+    [library],
+    [logs]
+  );
+  const handleToggleAudio = () => {
+    if (data?.incoming[0]) {
+      const newAudioState = !data?.local.audio;
+      aliceVideoCall.current?.config({ audio: newAudioState });
+      console.log(`Audio is now ${newAudioState ? "on" : "off"}`);
+    }
+  };
 
+  const handleToggleVideo = () => {
+    if (data?.incoming[0]) {
+      const newVideoState = !data?.local.video;
+      aliceVideoCall.current?.config({ video: newVideoState });
+      console.log(`Video is now ${newVideoState ? "on" : "off"}`);
+    }
+  };
   const initializePushAPI = async () => {
     console.log("initializePushAPI");
     if (!librarySigner) return;
@@ -228,6 +251,7 @@ const Video = () => {
 
   return (
     <div>
+      <TopBar />
       <div>
         <HContainer>
           {isValidUser === -1 && <p>Enter the wallet address to continue </p>}
@@ -286,7 +310,7 @@ const Video = () => {
           <input
             onChange={(e) => changeRecipientAddress(e.target.value)}
             value={recipientAddress}
-            style={{ display: "flex", flex: "1" }}
+            style={{ width: "300px" }} // Set a fixed width for the input field
             placeholder="recipient address"
             type="text"
           />
@@ -328,23 +352,6 @@ const Video = () => {
           <button onClick={endCall} disabled={data?.incoming[0]?.status !== 3}>
             End Video Call
           </button>
-          <button
-            disabled={!data?.incoming[0]}
-            onClick={() => {
-              aliceVideoCall.current?.config({ video: !data?.local.video }); // This function is used to toggle the video on/off
-            }}
-          >
-            Toggle Video
-          </button>
-
-          <button
-            disabled={!data?.incoming[0]}
-            onClick={() => {
-              aliceVideoCall.current?.config({ audio: !data?.local.audio }); // This function is used to toggle the audio on/off
-            }}
-          >
-            Toggle Audio
-          </button>
 
           {data?.incoming[0]?.status === CONSTANTS.VIDEO.STATUS.CONNECTED && (
             <Toast message="Video Call Connected" bg="#4caf50" />
@@ -368,41 +375,88 @@ const Video = () => {
 
         <HContainer>
           <VContainer>
-            <h2>Local Video</h2>
-            <VideoPlayer stream={data?.local.stream} isMuted={true} />
+            <VideoFrame>
+              <NameWrapperLeft>
+                <UserSection name=" Aliyah" flag="🇺🇸" />
+              </NameWrapperLeft>
+              <VideoPlayer stream={data?.local.stream} isMuted={true} />
+            </VideoFrame>
+            <h2 style={{ padding: "10px 0" }}>Local Video</h2>
           </VContainer>
 
           <VContainer>
-            <h2>Incoming Video</h2>
-            <VideoPlayer stream={data?.incoming[0].stream} isMuted={false} />
+            <VideoFrame>
+              <NameWrapperRight>
+                <UserSection name=" Victor" flag="🇬🇧" />
+              </NameWrapperRight>
+              <VideoPlayer stream={data?.incoming[0].stream} isMuted={false} />
+            </VideoFrame>
+            <h2 style={{ padding: "10px 0" }}>Incoming Video</h2>
           </VContainer>
         </HContainer>
+
+        <MessageInputArea style={{ display: "flex", alignItems: "center" }} />
       </div>
-      <div>
-        <hr />
-        <h2>Logs</h2>
-        {logs.map((log, index) => (
-          <LogText key={index}>{JSON.stringify(log)}</LogText>
-        ))}
-      </div>
+
+      <BottomNavBar
+        onToggleAudio={handleToggleAudio}
+        onToggleVideo={handleToggleVideo}
+        style={{ button: { fontSize: "1.2em" } }}
+      />
     </div>
   );
 };
 
 const HContainer = styled.div`
   display: flex;
+  justify-content: center;
   gap: 20px;
   margin: 20px 40px;
+  flex-wrap: nowrap; /* Prevent wrapping */
+  @media (max-width: 1200px) {
+    flex-wrap: wrap; /* Allow wrapping on smaller screens */
+  }
 `;
 
 const VContainer = styled.div`
   display: flex;
-  gap: 10px;
   flex-direction: column;
-  width: fit-content;
-  height: fit-content;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  min-width: 48%; /* Adjust width percentage to ensure both containers fit side by side */
+  max-width: 48%; /* Adjust width percentage to ensure both containers fit side by side */
+  height: auto;
+  box-sizing: border-box;
+  aspect-ratio: 16 / 9; /* Maintain 16:9 aspect ratio */
+  @media (max-width: 1200px) {
+    min-width: 100%; /* Adjust for smaller screens */
+    max-width: 100%; /* Adjust for smaller screens */
+  }
 `;
 
+const VideoFrame = styled.div`
+  width: 100%;
+  height: 0;
+  padding-top: 56.25%; /* Aspect ratio for 1920x1080 */
+  position: relative;
+  background-color: #000;
+`;
+const NameWrapperLeft = styled.div`
+  position: absolute;
+  top: 0.5px; /* Adjust as necessary to move the text higher */
+  left: 5px; /* Adjust as necessary */
+  display: flex;
+  justify-content: flex-start;
+`;
+
+const NameWrapperRight = styled.div`
+  position: absolute;
+  top: 0.5px; /* Adjust as necessary to move the text higher */
+  right: 5px; /* Adjust as necessary */
+  display: flex;
+  justify-content: flex-end;
+`;
 const spin = keyframes`
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
@@ -445,12 +499,6 @@ const Cross = styled.div`
   &:after {
     transform: rotate(-45deg);
   }
-`;
-
-const LogText = styled.p`
-  font-family: "Courier New", Courier, monospace;
-  background-color: #ddd;
-  font-size: 12px;
 `;
 
 export default Video;
