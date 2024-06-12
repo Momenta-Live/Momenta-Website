@@ -1,12 +1,23 @@
+/* eslint-disable no-unused-vars */
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { ethers } from "ethers";
 import { CONSTANTS, PushAPI } from "@pushprotocol/restapi";
-import styled, { keyframes } from "styled-components";
+import styled from "styled-components";
+import { EnvContext, Web3Context } from "context";
 
+// Custom Components
 import IncomingVideoModal from "components/Video/IncomingVideoModal";
 import Toast from "components/Video/Toast";
-import VideoPlayer from "components/Video/VideoPlayer";
-import { EnvContext, Web3Context } from "context";
+import VideoControlBar from "components/Video/VideoControlBar";
+import TopBar from "components/Video/TopBar";
+import LogBox from "components/Logs/LogBox";
+import TwoWayVideo from "components/Video/TwoWayVideo";
+import AddressInput from "components/Connect/AddressInput";
+import VideoStatusBar from "components/Video/VideoStatusBar";
+import MessageInputArea from "components/Video/MessageInputArea";
+
+// MK Components
+import MKBox from "components/MKBox";
 
 const Video = () => {
   const { account, library } = useContext(Web3Context);
@@ -227,70 +238,13 @@ const Video = () => {
   };
 
   return (
-    <div>
-      <div>
-        <HContainer>
-          {isValidUser === -1 && <p>Enter the wallet address to continue </p>}
-
-          {isValidUser === 0 && (
-            <>
-              <Loading />
-              <p>Checking address </p>
-            </>
-          )}
-
-          {isValidUser === 1 && (
-            <>
-              <Cross />
-              <p>Not a valid address, check logs for more info </p>
-            </>
-          )}
-
-          {isValidUser === 2 && (
-            <>
-              <Cross />
-              <p>
-                Valid address but current wallet and recipient not connected, click{" "}
-                <b>Send Chat Request</b> then Ask recipient to <b>Request Call</b>{" "}
-              </p>
-              <p>
-                Push Video can use multiple verification methods but this example checks for Push
-                Chat connection between wallets{" "}
-              </p>
-            </>
-          )}
-
-          {isValidUser === 3 && (
-            <>
-              <Checkmark />
-              <p>
-                All good, click Request Video Call, if call is not establishing, it might mean chat
-                connections are not done for sender and recipient{" "}
-              </p>
-              <p>
-                In that case, ask recipient to request video call (that auto approves any request
-                between the wallet){" "}
-              </p>
-            </>
-          )}
-
-          {isValidUser === 4 && (
-            <>
-              <Checkmark />
-              <p>Call requested, recipient should see popup in few secs </p>
-            </>
-          )}
-        </HContainer>
-
-        <HContainer>
-          <input
-            onChange={(e) => changeRecipientAddress(e.target.value)}
-            value={recipientAddress}
-            style={{ display: "flex", flex: "1" }}
-            placeholder="recipient address"
-            type="text"
-          />
-        </HContainer>
+    <>
+      <MKBox width="90%" p={10}>
+        <AddressInput
+          isValidUser={isValidUser}
+          onChangeFunc={changeRecipientAddress}
+          address={recipientAddress}
+        />
 
         <HContainer>
           {isValidUser === 2 && (
@@ -328,23 +282,6 @@ const Video = () => {
           <button onClick={endCall} disabled={data?.incoming[0]?.status !== 3}>
             End Video Call
           </button>
-          <button
-            disabled={!data?.incoming[0]}
-            onClick={() => {
-              aliceVideoCall.current?.config({ video: !data?.local.video }); // This function is used to toggle the video on/off
-            }}
-          >
-            Toggle Video
-          </button>
-
-          <button
-            disabled={!data?.incoming[0]}
-            onClick={() => {
-              aliceVideoCall.current?.config({ audio: !data?.local.audio }); // This function is used to toggle the audio on/off
-            }}
-          >
-            Toggle Audio
-          </button>
 
           {data?.incoming[0]?.status === CONSTANTS.VIDEO.STATUS.CONNECTED && (
             <Toast message="Video Call Connected" bg="#4caf50" />
@@ -358,34 +295,30 @@ const Video = () => {
             />
           )}
         </HContainer>
-        <HContainer>
-          <p>LOCAL VIDEO: {data?.local.video ? "TRUE" : "FALSE"}</p>
-          <p>LOCAL AUDIO: {data?.local.audio ? "TRUE" : "FALSE"}</p>
-          <p>INCOMING VIDEO: {data?.incoming[0]?.video ? "TRUE" : "FALSE"}</p>
-          <p>INCOMING AUDIO: {data?.incoming[0]?.audio ? "TRUE" : "FALSE"}</p>
-        </HContainer>
+
+        <VideoStatusBar data={data} />
+
         <hr />
 
-        <HContainer>
-          <VContainer>
-            <h2>Local Video</h2>
-            <VideoPlayer stream={data?.local.stream} isMuted={true} />
-          </VContainer>
-
-          <VContainer>
-            <h2>Incoming Video</h2>
-            <VideoPlayer stream={data?.incoming[0].stream} isMuted={false} />
-          </VContainer>
-        </HContainer>
-      </div>
-      <div>
-        <hr />
-        <h2>Logs</h2>
-        {logs.map((log, index) => (
-          <LogText key={index}>{JSON.stringify(log)}</LogText>
-        ))}
-      </div>
-    </div>
+        <TopBar />
+        <TwoWayVideo
+          streamSelf={data?.local.stream}
+          isMutedSelf={true}
+          streamOther={data?.incoming[0].stream}
+          isMutedOther={false}
+        />
+        <MessageInputArea />
+        <VideoControlBar
+          onToggleAudio={() => {
+            aliceVideoCall.current?.config({ audio: !data?.local.audio });
+          }}
+          onToggleVideo={() => {
+            aliceVideoCall.current?.config({ video: !data?.local.video });
+          }}
+        />
+        {/*<LogBox logs={logs} />*/}
+      </MKBox>
+    </>
   );
 };
 
@@ -393,64 +326,6 @@ const HContainer = styled.div`
   display: flex;
   gap: 20px;
   margin: 20px 40px;
-`;
-
-const VContainer = styled.div`
-  display: flex;
-  gap: 10px;
-  flex-direction: column;
-  width: fit-content;
-  height: fit-content;
-`;
-
-const spin = keyframes`
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-`;
-
-const Loading = styled.div`
-  border: 2px solid #eee; /* Light grey */
-  border-top: 2px solid rgb(226, 8, 128); /* Blue */
-  border-radius: 50%;
-  width: 12px;
-  height: 12px;
-  animation: ${spin} 1s linear infinite;
-`;
-
-const Checkmark = styled.div`
-  width: 12px;
-  height: 24px;
-  border: solid rgb(52, 168, 6);
-  border-width: 0 2px 2px 0;
-  transform: rotate(45deg);
-`;
-
-const Cross = styled.div`
-  width: 20px;
-  height: 20px;
-  position: relative;
-  &:before,
-  &:after {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 9px;
-    height: 20px;
-    width: 2px;
-    background-color: red;
-  }
-  &:before {
-    transform: rotate(45deg);
-  }
-  &:after {
-    transform: rotate(-45deg);
-  }
-`;
-
-const LogText = styled.p`
-  font-family: "Courier New", Courier, monospace;
-  background-color: #ddd;
-  font-size: 12px;
 `;
 
 export default Video;
