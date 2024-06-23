@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 // Import MK Components
 import MKBox from "components/MKBox";
 
@@ -13,12 +14,6 @@ import ConnectWalletComp from "components/Connect/ConnectWalletComp";
 import { useWeb3React } from "@web3-react/core";
 
 function Video() {
-  const checkForWeb3Data = ({ library, active, account, chainId }) => {
-    return library && active && account && chainId;
-  };
-
-  const { account, library, active, chainId } = useWeb3React();
-
   return (
     <>
       <MKBox
@@ -36,13 +31,15 @@ function Video() {
           placeItems: "center",
         }}
       >
-        <ConnectWalletComp />
+        {/* <ConnectWalletComp />
         {checkForWeb3Data({ active, account, library, chainId }) ? (
           <VideoSection />
         ) : (
           <div>Connect to a wallet</div>
         )}
-        ;
+        ; */}
+        <ConnectButtonComp />
+        <VideoSection />
       </MKBox>
     </>
   );

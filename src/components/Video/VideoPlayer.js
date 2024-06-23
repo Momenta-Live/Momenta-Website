@@ -15,9 +15,9 @@ const VideoPlayer = ({ stream, isMuted }) => {
 };
 
 const Video = styled.video`
-  width: 25vw;
-  height: fit-content;
-  border: 2px solid black;
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Ensure the video fills the container while maintaining aspect ratio */
 `;
 
 VideoPlayer.propTypes = {

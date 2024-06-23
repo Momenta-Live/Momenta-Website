@@ -8,23 +8,23 @@ import Toast from "components/Video/Toast";
 import VideoPlayer from "components/Video/VideoPlayer";
 import { EnvContext, Web3Context } from "context";
 
+import TopBar from "./TopBar";
+import BottomNavBar from "./BottomNavBar";
+import UserSection from "./UserSection";
+import MessageInputArea from "./MessageInputArea";
+
 const Video = () => {
   const { account, library } = useContext(Web3Context);
   const { env } = useContext(EnvContext);
 
-  console.log("library", library);
-
-  const librarySigner = library.getSigner();
-
-  console.log("librarySigner", librarySigner);
-  console.log("librarySigner getAddress", librarySigner.getAddress);
+  let librarySigner;
 
   const aliceVideoCall = useRef();
   const [data, setData] = useState(CONSTANTS.VIDEO.INITIAL_DATA);
   const [incomingCallerAddress, setIncomingCallerAddress] = useState(null);
   const [isPushStreamConnected, setIsPushStreamConnected] = useState(false);
 
-  const [recipientAddress, setRecipientAddress] = useState();
+  const [recipientAddress, setRecipientAddress] = useState("");
   const [pushUser, setPushUser] = useState();
 
   // -1 for not initialized, 0 for checking in progress, 1 if it's not an address, 2 for user is not connected by any verification condition, 3 for valid user
@@ -33,10 +33,48 @@ const Video = () => {
   // Log all response
   const [logs, setLogs] = useState(["Logs as the response comes in"]);
 
+  useEffect(
+    () => {
+      const fetchSigner = async () => {
+        if (library && typeof library.getSigner === "function") {
+          librarySigner = await library.getSigner();
+          initializePushAPI();
+        } else {
+          console.log("library does not have getSigner function");
+        }
+      };
+
+      fetchSigner();
+    },
+    [library],
+    [logs]
+  );
+  const handleToggleAudio = () => {
+    if (data?.incoming[0]) {
+      const newAudioState = !data?.local.audio;
+      aliceVideoCall.current?.config({ audio: newAudioState });
+      console.log(`Audio is now ${newAudioState ? "on" : "off"}`);
+    }
+  };
+
+  const handleToggleVideo = () => {
+    if (data?.incoming[0]) {
+      const newVideoState = !data?.local.video;
+      aliceVideoCall.current?.config({ video: newVideoState });
+      console.log(`Video is now ${newVideoState ? "on" : "off"}`);
+    }
+  };
   const initializePushAPI = async () => {
+    console.log("initializePushAPI");
+    if (!librarySigner) return;
     const user = await PushAPI.initialize(librarySigner, {
       env: env,
     });
+
+    // Check for errors in userAlice's initialization and handle them if any
+    if (user.errors.length > 0) {
+      console.log("Error initializing Push API", user.errors);
+    }
 
     const createdStream = await user.initStream([
       CONSTANTS.STREAM.VIDEO,
@@ -86,17 +124,25 @@ const Video = () => {
         audio: true,
       },
     });
-
+    console.log("waiting for connection");
     await createdStream.connect();
     setPushUser(user);
+    console.log("pushUser", user);
   };
 
   // Here we initialize the push video API, which is the first and important step to make video calls
   useEffect(() => {
-    if (!librarySigner) return;
-    if (data?.incoming[0]?.status !== CONSTANTS.VIDEO.STATUS.UNINITIALIZED) return; // data?.incoming[0]?.status will have a status of CONSTANTS.VIDEO.STATUS.UNINITIALIZED when the video call is not initialized, call ended or denied. So we Initialize the Push API here.
+    console.log("initializePushAPI useEffect");
+    if (!librarySigner) {
+      console.log("librarySigner not initialized");
+      return;
+    }
+    if (data?.incoming[0]?.status !== CONSTANTS.VIDEO.STATUS.UNINITIALIZED) {
+      console.log("data?.incoming[0]?.status", data?.incoming[0]?.status);
+      return; // data?.incoming[0]?.status will have a status of CONSTANTS.VIDEO.STATUS.UNINITIALIZED when the video call is not initialized, call ended or denied. So we Initialize the Push API here.
+    }
     initializePushAPI();
-  }, [env, library, data?.incoming[0]?.status]);
+  }, [env, librarySigner, account, data?.incoming[0]?.status]);
 
   useEffect(() => {
     setLogs((prevLogs) => [
@@ -120,7 +166,7 @@ const Video = () => {
       ]);
 
       // check if the recipient is a valid address
-      if (!ethers.isAddress(recipientAddress)) {
+      if (!ethers.utils.isAddress(recipientAddress)) {
         setLogs((prevLogs) => [
           `Recipient is not a valid address, for brevity, the example doesn't support all supported wallet standards`,
           ...prevLogs,
@@ -130,6 +176,7 @@ const Video = () => {
       }
 
       // little hack to check if the user is connected to the recipient via chat
+      console.log("pushUser", pushUser);
       const response = await pushUser.chat.latest(recipientAddress);
       setLogs((prevLogs) => [`Response from the API is ${JSON.stringify(response)}`, ...prevLogs]);
 
@@ -141,8 +188,13 @@ const Video = () => {
         setIsValidUser(2);
       } else {
         try {
-          // also accept the request on the pretext if it's not accepted already
-          await pushUser.chat.accept(recipientAddress);
+          setLogs((prevLogs) => [
+            `Recipient wallet is connected to sender, attempting to connect`,
+            ...prevLogs,
+          ]);
+          // also accept the request on the pretext if it's not accepted alreadyS
+          const response = await pushUser.chat.accept(recipientAddress);
+          console.log("response", response);
         } catch (e) {
           setLogs((prevLogs) => [`Error while accepting the chat request, ${e}`, ...prevLogs]);
         }
@@ -199,186 +251,212 @@ const Video = () => {
 
   return (
     <div>
-      {account ? (
-        <div>
-          <HContainer>
-            {isValidUser === -1 && <p>Enter the wallet address to continue </p>}
-
-            {isValidUser === 0 && (
-              <>
-                <Loading />
-                <p>Checking address </p>
-              </>
-            )}
-
-            {isValidUser === 1 && (
-              <>
-                <Cross />
-                <p>Not a valid address, check logs for more info </p>
-              </>
-            )}
-
-            {isValidUser === 2 && (
-              <>
-                <Cross />
-                <p>
-                  Valid address but current wallet and recipient not connected, click{" "}
-                  <b>Send Chat Request</b> then Ask recipient to <b>Request Call</b>{" "}
-                </p>
-                <p>
-                  Push Video can use multiple verification methods but this example checks for Push
-                  Chat connection between wallets{" "}
-                </p>
-              </>
-            )}
-
-            {isValidUser === 3 && (
-              <>
-                <Checkmark />
-                <p>
-                  All good, click Request Video Call, if call is not establishing, it might mean
-                  chat connections are not done for sender and recipient{" "}
-                </p>
-                <p>
-                  In that case, ask recipient to request video call (that auto approves any request
-                  between the wallet){" "}
-                </p>
-              </>
-            )}
-
-            {isValidUser === 4 && (
-              <>
-                <Checkmark />
-                <p>Call requested, recipient should see popup in few secs </p>
-              </>
-            )}
-          </HContainer>
-
-          <HContainer>
-            <input
-              onChange={(e) => changeRecipientAddress(e.target.value)}
-              value={recipientAddress}
-              style={{ display: "flex", flex: "1" }}
-              placeholder="recipient address"
-              type="text"
-            />
-          </HContainer>
-
-          <HContainer>
-            {isValidUser === 2 && (
-              <button
-                onClick={() => {
-                  pushUser.chat.send(recipientAddress, {
-                    content: "Hey, let's connect via video call",
-                  });
-                }}
-              >
-                Send Chat Request
-              </button>
-            )}
-
-            {isValidUser === 2 && (
-              <button
-                onClick={() => {
-                  pushUser.chat.accept(recipientAddress);
-                }}
-              >
-                Accept Chat Request
-              </button>
-            )}
-
-            <button
-              onClick={() => {
-                if (recipientAddress) {
-                  requestVideoCall(recipientAddress);
-                }
-              }}
-              disabled={isValidUser !== 3 || !recipientAddress || data?.incoming[0]?.status === 3}
-            >
-              Request Video Call
-            </button>
-            <button onClick={endCall} disabled={data?.incoming[0]?.status !== 3}>
-              End Video Call
-            </button>
-            <button
-              disabled={!data?.incoming[0]}
-              onClick={() => {
-                aliceVideoCall.current?.config({ video: !data?.local.video }); // This function is used to toggle the video on/off
-              }}
-            >
-              Toggle Video
-            </button>
-
-            <button
-              disabled={!data?.incoming[0]}
-              onClick={() => {
-                aliceVideoCall.current?.config({ audio: !data?.local.audio }); // This function is used to toggle the audio on/off
-              }}
-            >
-              Toggle Audio
-            </button>
-
-            {data?.incoming[0]?.status === CONSTANTS.VIDEO.STATUS.CONNECTED && (
-              <Toast message="Video Call Connected" bg="#4caf50" />
-            )}
-
-            {data?.incoming[0].status === CONSTANTS.VIDEO.STATUS.RECEIVED && (
-              <IncomingVideoModal
-                callerID={incomingCallerAddress}
-                onAccept={acceptIncomingCall}
-                onReject={denyIncomingCall}
-              />
-            )}
-          </HContainer>
-          <HContainer>
-            <p>LOCAL VIDEO: {data?.local.video ? "TRUE" : "FALSE"}</p>
-            <p>LOCAL AUDIO: {data?.local.audio ? "TRUE" : "FALSE"}</p>
-            <p>INCOMING VIDEO: {data?.incoming[0]?.video ? "TRUE" : "FALSE"}</p>
-            <p>INCOMING AUDIO: {data?.incoming[0]?.audio ? "TRUE" : "FALSE"}</p>
-          </HContainer>
-          <hr />
-
-          <HContainer>
-            <VContainer>
-              <h2>Local Video</h2>
-              <VideoPlayer stream={data?.local.stream} isMuted={true} />
-            </VContainer>
-
-            <VContainer>
-              <h2>Incoming Video</h2>
-              <VideoPlayer stream={data?.incoming[0].stream} isMuted={false} />
-            </VContainer>
-          </HContainer>
-        </div>
-      ) : (
-        "Please connect your wallet."
-      )}
-
+      <TopBar />
       <div>
+        <HContainer>
+          {isValidUser === -1 && <p>Enter the wallet address to continue </p>}
+
+          {isValidUser === 0 && (
+            <>
+              <Loading />
+              <p>Checking address </p>
+            </>
+          )}
+
+          {isValidUser === 1 && (
+            <>
+              <Cross />
+              <p>Not a valid address, check logs for more info </p>
+            </>
+          )}
+
+          {isValidUser === 2 && (
+            <>
+              <Cross />
+              <p>
+                Valid address but current wallet and recipient not connected, click{" "}
+                <b>Send Chat Request</b> then Ask recipient to <b>Request Call</b>{" "}
+              </p>
+              <p>
+                Push Video can use multiple verification methods but this example checks for Push
+                Chat connection between wallets{" "}
+              </p>
+            </>
+          )}
+
+          {isValidUser === 3 && (
+            <>
+              <Checkmark />
+              <p>
+                All good, click Request Video Call, if call is not establishing, it might mean chat
+                connections are not done for sender and recipient{" "}
+              </p>
+              <p>
+                In that case, ask recipient to request video call (that auto approves any request
+                between the wallet){" "}
+              </p>
+            </>
+          )}
+
+          {isValidUser === 4 && (
+            <>
+              <Checkmark />
+              <p>Call requested, recipient should see popup in few secs </p>
+            </>
+          )}
+        </HContainer>
+
+        <HContainer>
+          <input
+            onChange={(e) => changeRecipientAddress(e.target.value)}
+            value={recipientAddress}
+            style={{ width: "300px" }} // Set a fixed width for the input field
+            placeholder="recipient address"
+            type="text"
+          />
+        </HContainer>
+
+        <HContainer>
+          {isValidUser === 2 && (
+            <button
+              onClick={() => {
+                pushUser.chat.send(recipientAddress, {
+                  content: "Hey, let's connect via video call",
+                });
+              }}
+            >
+              Send Chat Request
+            </button>
+          )}
+
+          {isValidUser === 2 && (
+            <button
+              onClick={() => {
+                pushUser.chat.accept(recipientAddress);
+              }}
+            >
+              Accept Chat Request
+            </button>
+          )}
+
+          <button
+            onClick={() => {
+              if (recipientAddress) {
+                requestVideoCall(recipientAddress);
+              }
+            }}
+            disabled={isValidUser !== 3 || !recipientAddress || data?.incoming[0]?.status === 3}
+          >
+            Request Video Call
+          </button>
+          <button onClick={endCall} disabled={data?.incoming[0]?.status !== 3}>
+            End Video Call
+          </button>
+
+          {data?.incoming[0]?.status === CONSTANTS.VIDEO.STATUS.CONNECTED && (
+            <Toast message="Video Call Connected" bg="#4caf50" />
+          )}
+
+          {data?.incoming[0].status === CONSTANTS.VIDEO.STATUS.RECEIVED && (
+            <IncomingVideoModal
+              callerID={incomingCallerAddress}
+              onAccept={acceptIncomingCall}
+              onReject={denyIncomingCall}
+            />
+          )}
+        </HContainer>
+        <HContainer>
+          <p>LOCAL VIDEO: {data?.local.video ? "TRUE" : "FALSE"}</p>
+          <p>LOCAL AUDIO: {data?.local.audio ? "TRUE" : "FALSE"}</p>
+          <p>INCOMING VIDEO: {data?.incoming[0]?.video ? "TRUE" : "FALSE"}</p>
+          <p>INCOMING AUDIO: {data?.incoming[0]?.audio ? "TRUE" : "FALSE"}</p>
+        </HContainer>
         <hr />
-        <h2>Logs</h2>
-        {logs.map((log, index) => (
-          <LogText key={index}>{JSON.stringify(log)}</LogText>
-        ))}
+
+        <HContainer>
+          <VContainer>
+            <VideoFrame>
+              <NameWrapperLeft>
+                <UserSection name=" Aliyah" flag="🇺🇸" />
+              </NameWrapperLeft>
+              <VideoPlayer stream={data?.local.stream} isMuted={true} />
+            </VideoFrame>
+            <h2 style={{ padding: "10px 0" }}>Local Video</h2>
+          </VContainer>
+
+          <VContainer>
+            <VideoFrame>
+              <NameWrapperRight>
+                <UserSection name=" Victor" flag="🇬🇧" />
+              </NameWrapperRight>
+              <VideoPlayer stream={data?.incoming[0].stream} isMuted={false} />
+            </VideoFrame>
+            <h2 style={{ padding: "10px 0" }}>Incoming Video</h2>
+          </VContainer>
+        </HContainer>
+
+        <MessageInputArea style={{ display: "flex", alignItems: "center" }} />
       </div>
+
+      <BottomNavBar
+        onToggleAudio={handleToggleAudio}
+        onToggleVideo={handleToggleVideo}
+        style={{ button: { fontSize: "1.2em" } }}
+      />
     </div>
   );
 };
 
 const HContainer = styled.div`
   display: flex;
+  justify-content: center;
   gap: 20px;
   margin: 20px 40px;
+  flex-wrap: nowrap; /* Prevent wrapping */
+  @media (max-width: 1200px) {
+    flex-wrap: wrap; /* Allow wrapping on smaller screens */
+  }
 `;
 
 const VContainer = styled.div`
   display: flex;
-  gap: 10px;
   flex-direction: column;
-  width: fit-content;
-  height: fit-content;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  min-width: 48%; /* Adjust width percentage to ensure both containers fit side by side */
+  max-width: 48%; /* Adjust width percentage to ensure both containers fit side by side */
+  height: auto;
+  box-sizing: border-box;
+  aspect-ratio: 16 / 9; /* Maintain 16:9 aspect ratio */
+  @media (max-width: 1200px) {
+    min-width: 100%; /* Adjust for smaller screens */
+    max-width: 100%; /* Adjust for smaller screens */
+  }
 `;
 
+const VideoFrame = styled.div`
+  width: 100%;
+  height: 0;
+  padding-top: 56.25%; /* Aspect ratio for 1920x1080 */
+  position: relative;
+  background-color: #000;
+`;
+const NameWrapperLeft = styled.div`
+  position: absolute;
+  top: 0.5px; /* Adjust as necessary to move the text higher */
+  left: 5px; /* Adjust as necessary */
+  display: flex;
+  justify-content: flex-start;
+`;
+
+const NameWrapperRight = styled.div`
+  position: absolute;
+  top: 0.5px; /* Adjust as necessary to move the text higher */
+  right: 5px; /* Adjust as necessary */
+  display: flex;
+  justify-content: flex-end;
+`;
 const spin = keyframes`
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
@@ -421,12 +499,6 @@ const Cross = styled.div`
   &:after {
     transform: rotate(-45deg);
   }
-`;
-
-const LogText = styled.p`
-  font-family: "Courier New", Courier, monospace;
-  background-color: #ddd;
-  font-size: 12px;
 `;
 
 export default Video;
