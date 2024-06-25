@@ -31,7 +31,7 @@ function Video() {
           placeItems: "center",
         }}
       >
-        <ConnectButtonComp />
+        {/* <ConnectButtonComp /> */}
         <VideoSection />
       </MKBox>
     </>

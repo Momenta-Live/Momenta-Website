@@ -24,7 +24,7 @@ const Video = () => {
   const [incomingCallerAddress, setIncomingCallerAddress] = useState(null);
   const [isPushStreamConnected, setIsPushStreamConnected] = useState(false);
 
-  const [recipientAddress, setRecipientAddress] = useState("");
+  const [recipientAddress] = useState("");
   const [pushUser, setPushUser] = useState();
 
   // -1 for not initialized, 0 for checking in progress, 1 if it's not an address, 2 for user is not connected by any verification condition, 3 for valid user
@@ -212,24 +212,23 @@ const Video = () => {
 
   // This function is used to check if the recipient address is connected to the sender address via Push Chat
   // You can also pass different verification option in the future (Like connected via Lens, etc)
-  const changeRecipientAddress = async (address) => {
-    setRecipientAddress(address);
-    setIsValidUser(0);
-
-    setLogs((prevLogs) => [
-      `Recipient address changed to ${
-        address ? address : "empty"
-      }, checking if the recipient and the sender wallets are connected via Chat`,
-      ...prevLogs,
-    ]);
-  };
+  // const changeRecipientAddress = async (address) => {
+  //   setRecipientAddress(address);
+  //   setIsValidUser(0);
+  //   setLogs((prevLogs) => [
+  //     `Recipient address changed to ${
+  //       address ? address : "empty"
+  //     }, checking if the recipient and the sender wallets are connected via Chat`,
+  //     ...prevLogs,
+  //   ]);
+  // };
 
   // This function is used to request a video call to a recipient
-  const requestVideoCall = async (recipient) => {
-    setLogs((prevLogs) => [`Requesting video call to ${recipient}`, ...prevLogs]);
-    setIsValidUser(4);
-    await aliceVideoCall.current.request([recipient]);
-  };
+  // const requestVideoCall = async (recipient) => {
+  //   setLogs((prevLogs) => [`Requesting video call to ${recipient}`, ...prevLogs]);
+  //   setIsValidUser(4);
+  //   await aliceVideoCall.current.request([recipient]);
+  // };
 
   // This function is used to accept the incoming video call
   const acceptIncomingCall = async () => {
@@ -244,17 +243,17 @@ const Video = () => {
   };
 
   // This function is used to end the ongoing video call
-  const endCall = async () => {
-    setLogs((prevLogs) => [`Ending video call`, ...prevLogs]);
-    await aliceVideoCall.current.disconnect();
-  };
+  // const endCall = async () => {
+  //   setLogs((prevLogs) => [`Ending video call`, ...prevLogs]);
+  //   await aliceVideoCall.current.disconnect();
+  // };
 
   return (
     <div>
       <TopBar />
       <div>
         <HContainer>
-          {isValidUser === -1 && <p>Enter the wallet address to continue </p>}
+          {/* {isValidUser === -1 && <p>Enter the wallet address to continue </p>} */}
 
           {isValidUser === 0 && (
             <>
@@ -306,7 +305,7 @@ const Video = () => {
           )}
         </HContainer>
 
-        <HContainer>
+        {/* <HContainer>
           <input
             onChange={(e) => changeRecipientAddress(e.target.value)}
             value={recipientAddress}
@@ -314,7 +313,7 @@ const Video = () => {
             placeholder="recipient address"
             type="text"
           />
-        </HContainer>
+        </HContainer> */}
 
         <HContainer>
           {isValidUser === 2 && (
@@ -339,7 +338,7 @@ const Video = () => {
             </button>
           )}
 
-          <button
+          {/* <button
             onClick={() => {
               if (recipientAddress) {
                 requestVideoCall(recipientAddress);
@@ -348,10 +347,10 @@ const Video = () => {
             disabled={isValidUser !== 3 || !recipientAddress || data?.incoming[0]?.status === 3}
           >
             Request Video Call
-          </button>
-          <button onClick={endCall} disabled={data?.incoming[0]?.status !== 3}>
+          </button> */}
+          {/* <button onClick={endCall} disabled={data?.incoming[0]?.status !== 3}>
             End Video Call
-          </button>
+          </button> */}
 
           {data?.incoming[0]?.status === CONSTANTS.VIDEO.STATUS.CONNECTED && (
             <Toast message="Video Call Connected" bg="#4caf50" />
@@ -365,33 +364,37 @@ const Video = () => {
             />
           )}
         </HContainer>
-        <HContainer>
+        {/* <HContainer>
           <p>LOCAL VIDEO: {data?.local.video ? "TRUE" : "FALSE"}</p>
           <p>LOCAL AUDIO: {data?.local.audio ? "TRUE" : "FALSE"}</p>
           <p>INCOMING VIDEO: {data?.incoming[0]?.video ? "TRUE" : "FALSE"}</p>
           <p>INCOMING AUDIO: {data?.incoming[0]?.audio ? "TRUE" : "FALSE"}</p>
         </HContainer>
-        <hr />
+        <hr /> */}
 
         <HContainer>
           <VContainer>
-            <VideoFrame>
-              <NameWrapperLeft>
-                <UserSection name=" Aliyah" flag="🇺🇸" />
-              </NameWrapperLeft>
-              <VideoPlayer stream={data?.local.stream} isMuted={true} />
-            </VideoFrame>
-            <h2 style={{ padding: "10px 0" }}>Local Video</h2>
+            <VideoContainer>
+              <VideoFrame>
+                <NameWrapperLeft>
+                  <UserSection name=" Aliyah" flag="🇺🇸" />
+                </NameWrapperLeft>
+                <VideoPlayer stream={data?.local.stream} isMuted={true} />
+              </VideoFrame>
+            </VideoContainer>
+            {/* <h2 style={{ padding: "10px 0" }}>Local Video</h2> */}
           </VContainer>
 
           <VContainer>
-            <VideoFrame>
-              <NameWrapperRight>
-                <UserSection name=" Victor" flag="🇬🇧" />
-              </NameWrapperRight>
-              <VideoPlayer stream={data?.incoming[0].stream} isMuted={false} />
-            </VideoFrame>
-            <h2 style={{ padding: "10px 0" }}>Incoming Video</h2>
+            <VideoContainer>
+              <VideoFrame>
+                <NameWrapperRight>
+                  <UserSection name=" Victor" flag="🇬🇧" />
+                </NameWrapperRight>
+                <VideoPlayer stream={data?.incoming[0].stream} isMuted={false} />
+              </VideoFrame>
+              {/* <h2 style={{ padding: "10px 0" }}>Incoming Video</h2> */}
+            </VideoContainer>
           </VContainer>
         </HContainer>
 
@@ -408,13 +411,15 @@ const Video = () => {
 };
 
 const HContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  gap: 20px;
-  margin: 20px 40px;
-  flex-wrap: nowrap; /* Prevent wrapping */
+  display: grid;
+
+  grid-template-columns: repeat(2, minmax(600px, 1fr)); // Increased from previously smaller values
+  gap: 20px; // Can be adjusted for spacing between frames
+  margin: 20px 40px; // Ensure it does not interfere with the overall page layout
+  align-items: start; // Keeps items aligned at the top of their cells
+
   @media (max-width: 1200px) {
-    flex-wrap: wrap; /* Allow wrapping on smaller screens */
+    grid-template-columns: 1fr; // Switch to a single column layout on smaller screens
   }
 `;
 
@@ -423,25 +428,29 @@ const VContainer = styled.div`
   flex-direction: column;
   align-items: center;
   gap: 10px;
-  flex: 1;
-  min-width: 48%; /* Adjust width percentage to ensure both containers fit side by side */
-  max-width: 48%; /* Adjust width percentage to ensure both containers fit side by side */
-  height: auto;
-  box-sizing: border-box;
-  aspect-ratio: 16 / 9; /* Maintain 16:9 aspect ratio */
-  @media (max-width: 1200px) {
-    min-width: 100%; /* Adjust for smaller screens */
-    max-width: 100%; /* Adjust for smaller screens */
-  }
+  width: 100%; // Ensures it takes up all available space within the grid cell
+  height: auto; // Adjusts height based on the width while maintaining aspect ratio
+  aspect-ratio: 16 / 9; // Maintains a 16:9 aspect ratio
 `;
 
-const VideoFrame = styled.div`
-  width: 100%;
-  height: 0;
-  padding-top: 56.25%; /* Aspect ratio for 1920x1080 */
+const VideoContainer = styled.div`
   position: relative;
-  background-color: #000;
+  width: 100%; // Take up 100% of the width of its parent container
+  height: 0; // Start with no height
+  padding-top: 56.25%; // Padding-top for 16:9 aspect ratio (9 / 16 = 0.5625)
+  overflow: hidden; // Hides anything outside this container
 `;
+const VideoFrame = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #000; // Background color for visibility
+  width: 100%; // Stretch to cover the container width
+  height: 100%; // Stretch to cover the container height
+`;
+
 const NameWrapperLeft = styled.div`
   position: absolute;
   top: 0.5px; /* Adjust as necessary to move the text higher */

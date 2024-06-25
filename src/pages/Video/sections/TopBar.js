@@ -6,7 +6,10 @@ const useStyles = makeStyles(() => ({
   appBar: {
     backgroundColor: "transparent",
     boxShadow: "none",
-    position: "relative",
+    position: "fixed", // Use "absolute" if you don't want it to stick during scroll
+    top: "50px", // Adjust this value as needed to push the AppBar down from the top
+    width: "100%",
+    zIndex: 1100, // Keeps it above other content if fixed
   },
   container: {
     display: "flex",
