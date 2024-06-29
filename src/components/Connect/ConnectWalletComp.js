@@ -7,6 +7,7 @@ import { http } from "viem";
 import { mainnet } from "viem/chains";
 
 import { EthereumWalletConnectors } from "@dynamic-labs/ethereum";
+import { ZeroDevSmartWalletConnectors } from "@dynamic-labs/ethereum-aa";
 
 const config = createConfig({
   chains: [mainnet],
@@ -24,7 +25,7 @@ const ConnectWalletComp = () => {
       settings={{
         // Find your environment id at https://app.dynamic.xyz/dashboard/developer
         environmentId: "67e43f87-d17a-4fa5-8321-82dea772b347",
-        walletConnectors: [EthereumWalletConnectors],
+        walletConnectors: [EthereumWalletConnectors, ZeroDevSmartWalletConnectors],
       }}
     >
       <WagmiProvider config={config}>
