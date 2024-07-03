@@ -5,7 +5,10 @@ import { AccountContext, EnvContext, SocketContext, Web3Context } from "context"
 import { InjectedConnector } from "@web3-react/injected-connector";
 import * as PushApi from "@pushprotocol/restapi";
 import { PushAPI } from "@pushprotocol/restapi";
-import { useSDKSocket } from "hooks";
+import { useSDKSocket, dynamic } from "hooks";
+import { DynamicContextProvider } from "@dynamic-labs/sdk-react-core";
+import { EthereumWalletConnectors } from "@dynamic-labs/ethereum";
+import { ZeroDevSmartWalletConnectors } from "@dynamic-labs/ethereum-aa";
 
 // react-router components
 import { Routes, Route, Navigate, useLocation } from "react-router-dom";
@@ -79,21 +82,28 @@ export default function App() {
 
   return (
     <EnvContext.Provider value={{ env, isCAIP }}>
-      <Web3Context.Provider value={{ account, active, library, chainId }}>
-        <SocketContext.Provider value={socketData}>
-          <AccountContext.Provider value={{ pgpPrivateKey }}>
-            <ThemeProvider theme={theme}>
-              <CssBaseline />
-              <Routes>
-                {getRoutes(routes)}
-                <Route path="/" element={<Home />} />
-                <Route path="/video" element={<Video />} />
-                <Route path="*" element={<Navigate to="/" />} />
-              </Routes>
-            </ThemeProvider>
-          </AccountContext.Provider>
-        </SocketContext.Provider>
-      </Web3Context.Provider>
+      <DynamicContextProvider
+        settings={{
+          environmentId: "67e43f87-d17a-4fa5-8321-82dea772b347",
+          walletConnectors: [EthereumWalletConnectors, ZeroDevSmartWalletConnectors],
+        }}
+      >
+        <Web3Context.Provider value={{ account, active, library, chainId }}>
+          <SocketContext.Provider value={socketData}>
+            <AccountContext.Provider value={{ pgpPrivateKey }}>
+              <ThemeProvider theme={theme}>
+                <CssBaseline />
+                <Routes>
+                  {getRoutes(routes)}
+                  <Route path="/" element={<Home />} />
+                  <Route path="/video" element={<Video />} />
+                  <Route path="*" element={<Navigate to="/" />} />
+                </Routes>
+              </ThemeProvider>
+            </AccountContext.Provider>
+          </SocketContext.Provider>
+        </Web3Context.Provider>
+      </DynamicContextProvider>
     </EnvContext.Provider>
   );
 }

@@ -11,9 +11,15 @@ import backdrop from "assets/images/cloud_backdrop.png";
 // Custom Components
 import ConnectWalletComp from "components/Connect/ConnectWalletComp";
 
-import { useWeb3React } from "@web3-react/core";
+import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
 
 function Video() {
+  const checkForWeb3Data = ({ primaryWallet, isAuthenticated }) => {
+    return primaryWallet && isAuthenticated;
+  };
+
+  const { primaryWallet, isAuthenticated } = useDynamicContext();
+
   return (
     <>
       <MKBox
@@ -31,14 +37,12 @@ function Video() {
           placeItems: "center",
         }}
       >
-        {/* <ConnectWalletComp />
-        {checkForWeb3Data({ active, account, library, chainId }) ? (
+        {/* {checkForWeb3Data({ primaryWallet, isAuthenticated }) ? (
           <VideoSection />
         ) : (
-          <div>Connect to a wallet</div>
-        )}
-        ; */}
-        <ConnectButtonComp />
+          <ConnectWalletComp />
+        )} */}
+        <ConnectWalletComp />
         <VideoSection />
       </MKBox>
     </>
